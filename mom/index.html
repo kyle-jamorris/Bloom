@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Bloom"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#F4EFFB"><link rel="apple-touch-icon" href="icon-180.png"><link rel="icon" href="icon-192.png"><link rel="manifest" href="manifest.json">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bloom – Your pregnancy journey</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;800&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F4EFFB;--card:#FFFFFF;--ink:#3A2B4F;--soft:#7A6A91;--rose:#E5628A;--mint:#8FD3BC;--butter:#FFDB8E;--line:#E4DAF2;--glow:#FFE3EE;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1D1630;--card:#2A2142;--ink:#F3ECFF;--soft:#B5A6D0;--rose:#FF86A9;--mint:#7CCAB0;--butter:#F2C96E;--line:#3E3260;--glow:#4A2B4E}}
+:root[data-theme="dark"]{--bg:#1D1630;--card:#2A2142;--ink:#F3ECFF;--soft:#B5A6D0;--rose:#FF86A9;--mint:#7CCAB0;--butter:#F2C96E;--line:#3E3260;--glow:#4A2B4E}
+*{box-sizing:border-box}html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.55 Nunito,system-ui,sans-serif;min-height:100%}
+main{max-width:480px;margin:0 auto;padding:20px 18px 40px}
+h1,h2,.big{font-family:Fraunces,Georgia,serif;margin:0}
+h1{font-size:28px;line-height:1.15}h2{font-size:19px;margin-bottom:6px}
+p{margin:0}.soft{color:var(--soft)}.small{font-size:14px}
+.top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:14px}
+.link{background:none;border:0;color:var(--rose);font:600 14px Nunito,sans-serif;cursor:pointer;padding:6px 0;text-decoration:underline}
+.hero{text-align:center;margin:6px 0 18px}
+.ringwrap{position:relative;width:250px;height:250px;margin:0 auto}
+.ringwrap svg{position:absolute;inset:0;transform:rotate(-90deg)}
+.nest{position:absolute;inset:26px;border-radius:50%;background:radial-gradient(circle,var(--glow) 0%,var(--card) 72%);display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 8px 28px rgba(229,98,138,.18)}
+.fruit{font-size:86px;line-height:1;animation:bob 4s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-6px) rotate(-3deg)}}
+@media(prefers-reduced-motion:reduce){.fruit{animation:none}}
+.wk{font-family:Fraunces,serif;font-weight:800;font-size:30px;margin-top:10px}
+.sub{color:var(--soft);font-weight:600}
+.size{font-size:18px;margin-top:2px}
+.pill{display:inline-block;background:var(--butter);color:#4A3513;font-weight:800;border-radius:99px;padding:5px 14px;margin-top:10px;font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:18px;margin-bottom:14px}
+.mom{background:var(--glow);border-color:transparent;border-radius:22px 22px 22px 6px}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat b{display:block;font-family:Fraunces,serif;font-size:22px}
+.bar{height:10px;background:var(--line);border-radius:9px;margin-top:6px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--mint);border-radius:9px;transition:width .3s}
+.tri{position:relative;height:14px;border-radius:9px;display:flex;overflow:hidden;margin:14px 0 6px}
+.tri span{flex:1;background:var(--line)}.tri span:nth-child(1){flex:14}.tri span:nth-child(2){flex:13}.tri span:nth-child(3){flex:13}
+.tri .on{background:var(--mint)}
+.tl{display:flex;font-size:12px;color:var(--soft);font-weight:600}.tl span:nth-child(1){flex:14}.tl span:nth-child(2){flex:13}.tl span:nth-child(3){flex:13}
+input[type=range]{width:100%;accent-color:var(--rose);margin:10px 0 4px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.btn{background:var(--rose);color:var(--card);border:0;border-radius:99px;padding:12px 22px;font:800 16px Nunito,sans-serif;cursor:pointer}
+.btn.alt{background:var(--card);color:var(--rose);border:2px solid var(--rose)}
+.kick{width:78px;height:78px;border-radius:50%;font-size:34px;background:var(--mint);border:0;cursor:pointer}
+.kick:active{transform:scale(.92)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--rose);outline-offset:3px}
+label{display:block;font-weight:800;margin:16px 0 6px}
+input[type=date],select{width:100%;padding:13px;border-radius:14px;border:2px solid var(--line);background:var(--card);color:var(--ink);font:600 16px Nunito,sans-serif}
+.intro{text-align:center;padding-top:30px}.intro .fruit{font-size:72px;display:block;margin-bottom:10px}
+.err{color:var(--rose);font-weight:700;margin-top:10px;min-height:22px}
+input[type=text],input[type=time]{width:100%;min-width:0;padding:13px;border-radius:14px;border:2px solid var(--line);background:var(--card);color:var(--ink);font:600 16px Nunito,sans-serif}
+.two{display:grid;grid-template-columns:1.4fr 1fr;gap:8px;margin-top:8px}
+.two input{min-width:0}
+.ai{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}
+.chip{background:var(--glow);border:0;color:var(--ink);border-radius:99px;padding:7px 12px;font:600 13px Nunito,sans-serif;cursor:pointer}
+.nextb{border-radius:18px;padding:14px 16px;margin-bottom:14px;background:var(--card);border:2px solid var(--mint)}
+.nextb.soon{background:var(--butter);border-color:var(--butter);color:#4A3513}
+footer{font-size:12px;color:var(--soft);text-align:center;margin-top:18px}
+</style></head><body><main id="app"></main>
+<script>
+// [week, emoji, size comparison, length cm, weight g, development, note for mom]
+const D=[
+[4,'⚫','poppy seed',0.1,0,'A tiny ball of cells is nestling into the lining of your uterus. Big things are starting!','You may feel nothing yet, or just a missed period. A test can confirm it.'],
+[5,'🌱','apple seed',0.3,0,'The heart tube is forming and will start to flutter soon. The brain and spine are beginning too.','Tender breasts, tiredness and a queasy tummy can show up.'],
+[6,'🫘','lentil',0.6,0,'A tiny heartbeat is flickering, and little buds that become arms and legs have appeared.','Nausea may be building. Small, frequent snacks can help.'],
+[7,'🫐','blueberry',1,0.5,'The brain is growing fast and the face is taking shape: nostrils, eyes and ears.','Rest when you can. Your body is working overtime.'],
+[8,'🫘','kidney bean',1.6,1,'Fingers and toes are forming, and baby has started making tiny movements.','Ginger tea or crackers by the bed can ease morning sickness.'],
+[9,'🍇','grape',2.3,2,'Baby is now officially a fetus. Muscles and organs are settling in.','Mood swings are normal. Go easy on yourself.'],
+[10,'🍊','kumquat',3.1,4,'All the vital organs are in place and tiny fingernails are appearing.','If you haven’t yet, book your first prenatal visit.'],
+[12,'🟢','lime',5.4,14,'Reflexes are developing. Baby can curl their fingers into a fist.','Energy often returns around now and nausea fades for many moms.'],
+[14,'🍋','lemon',8.7,43,'Baby can squint, frown and maybe suck a thumb. Their neck can hold up the head.','Welcome to trimester two, often the most comfortable stretch.'],
+[16,'🥑','avocado',11.6,100,'Baby’s ears are in place and may pick up your voice and heartbeat.','Soon you might feel first flutters, like bubbles or tiny taps.'],
+[18,'🫑','bell pepper',14.2,190,'Baby is yawning, hiccupping and stretching. Fingerprints are forming.','Your anatomy scan usually happens between weeks 18 and 22.'],
+[20,'🍌','banana',25,300,'Halfway there! Baby is swallowing, and a waxy coat called vernix protects the skin.','The bump is likely showing. A great time to start belly photos.'],
+[22,'🥭','mango',28,430,'Eyebrows and eyelids are in place, and baby is practising a grip.','Movements get stronger. Notice when baby is awake and asleep.'],
+[24,'🌽','ear of corn',30,600,'The lungs are growing branches, and hearing is sharper. Loud noises may make baby jump.','A glucose screening is often done around now.'],
+[26,'🥕','large carrot',35,760,'Eyes begin to open, and baby responds to light and your voice.','Backaches and leg cramps are common. Stretch gently and drink water.'],
+[28,'🍆','eggplant',37,1000,'Baby can blink and dream while fat stores build under the skin.','Welcome to trimester three! Many moms start counting kicks now.'],
+[30,'🥬','cabbage',40,1300,'The brain is forming grooves and folds, and bones are hardening.','Heartburn and short breath are common. Prop yourself up with pillows.'],
+[32,'🎃','squash',42,1700,'Baby is practising breathing. Most turn head-down in the coming weeks.','Pack your hospital bag and sketch your birth preferences.'],
+[34,'🍈','cantaloupe',45,2100,'The lungs are maturing and baby gains about 200 g a week.','Practice contractions (Braxton Hicks) may appear. Call your provider if unsure.'],
+[36,'🍈','honeydew',47,2600,'Baby is dropping lower into your pelvis, getting ready.','Checkups become weekly. Rest up and install the car seat.'],
+[38,'🍉','mini watermelon',49,3100,'Baby is nearly ready. The organs are mature and the grip is strong.','Any day now. Keep your phone charged and your bag by the door.'],
+[40,'🍉','small watermelon',51,3400,'Full term! Baby is ready to meet you.','Due dates are estimates. Most babies arrive within two weeks either side.']];
+const DAY=864e5,$=s=>document.querySelector(s),app=$('#app');
+const today=()=>{const n=new Date();return new Date(n.getFullYear(),n.getMonth(),n.getDate())};
+const parse=s=>{const[a,b,c]=s.split('-').map(Number);return new Date(a,b-1,c)};
+const iso=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+const pick=w=>{let r=D[0];for(const e of D)if(e[0]<=w)r=e;return r};
+const cm=v=>v<10?v.toFixed(1)+' cm':Math.round(v)+' cm';
+const inch=v=>(v/2.54).toFixed(1)+' in';
+const wt=g=>g<1?'under 1 g':g>=1000?(g/1000).toFixed(1)+' kg ('+(g/453.6).toFixed(1)+' lb)':g+' g ('+(g/28.35).toFixed(1)+' oz)';
+let due=null,view=0,kicks=0;
+
+function setup(msg){
+  app.innerHTML=`<div class="intro"><span class="fruit">🌸</span><h1>Congratulations, mama</h1>
+  <p class="soft" style="margin-top:8px">Let’s follow your baby, week by week.</p></div>
+  <div class="card" style="margin-top:22px">
+  <label for="mode" style="margin-top:0">I know my…</label>
+  <select id="mode"><option value="due">Due date</option><option value="ivf">IVF embryo transfer date</option><option value="lmp">First day of my last period</option></select>
+  <div id="agebox" style="display:none"><label for="age">Embryo age at transfer</label><select id="age"><option value="5">Day 5 (blastocyst)</option><option value="3">Day 3</option><option value="6">Day 6</option></select></div>
+  <label for="dt" id="dtl">Due date</label><input type="date" id="dt">
+  <p class="err" id="err">${msg||''}</p>
+  <button class="btn" id="go" style="width:100%;margin-top:6px">Start my journey</button></div>
+  <footer>Your date stays on this device only.</footer>`;
+  $('#mode').onchange=()=>{const m=$('#mode').value;$('#agebox').style.display=m==='ivf'?'block':'none';$('#dtl').textContent=m==='ivf'?'Transfer date':m==='lmp'?'First day of last period':'Due date'};
+  $('#go').onclick=()=>{
+    const v=$('#dt').value;if(!v){$('#err').textContent='Pick a date to continue.';return}
+    let d=parse(v);const m=$('#mode').value;if(m==='lmp')d.setDate(d.getDate()+280);if(m==='ivf')d.setDate(d.getDate()+266-(+$('#age').value));
+    d=new Date(d.getFullYear(),d.getMonth(),d.getDate());
+    const left=Math.round((d-today())/DAY);
+    if(left<-14||left>290){$('#err').textContent='That date doesn’t look right. Check the date and try again.';return}
+    store.set('bloom-due',iso(d));due=d;view=null;main();
+  };
+}
+
+function main(){
+  const left=Math.round((due-today())/DAY),g=Math.max(0,280-left),wk=Math.min(40,Math.floor(g/7)),dd=g%7;
+  if(view===null)view=Math.max(4,wk);
+  const dueTxt=due.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+  const C=2*Math.PI*112;
+  app.innerHTML=`<div class="top"><div><h1>Hello, mama 💗</h1><p class="soft small" id="dueline"></p></div>
+  <button class="link" id="chg">Change date</button></div>
+  <section class="hero"><div class="ringwrap">
+  <svg width="250" height="250" viewBox="0 0 250 250" aria-hidden="true"><circle cx="125" cy="125" r="112" fill="none" stroke="var(--line)" stroke-width="12"/>
+  <circle id="ring" cx="125" cy="125" r="112" fill="none" stroke="var(--rose)" stroke-width="12" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C}" style="transition:stroke-dashoffset .5s"/></svg>
+  <div class="nest"><div class="fruit" id="fruit"></div><div class="wk" id="wk"></div></div></div>
+  <p class="size" id="size" style="margin-top:12px"></p><span class="pill" id="pill"></span></section>
+  <div id="next"></div>
+  <div class="card"><div class="row"><h2>Browse the weeks</h2><button class="link" id="now">Back to today</button></div>
+  <input type="range" id="sl" min="4" max="40" step="1" aria-label="Pregnancy week">
+  <div class="tri" id="tri"><span></span><span></span><span></span></div>
+  <div class="tl"><span>Trimester 1</span><span>Trimester 2</span><span>Trimester 3</span></div></div>
+  <div class="card"><h2>How big is baby?</h2><div class="stats"><div class="stat soft small">Length<b id="len"></b><span id="len2"></span></div><div class="stat soft small">Weight<b id="wgt"></b></div></div>
+  <div class="bar" aria-hidden="true"><i id="gb"></i></div><p class="soft small" style="margin-top:6px">Growth toward full-term length (about 51 cm)</p></div>
+  <div class="card"><h2>What’s happening</h2><p id="dev"></p></div>
+  <div class="card mom"><h2>For you, mama</h2><p id="mom"></p></div>
+  <div class="card"><h2>Appointments</h2><div id="alist"></div>
+  <p class="soft small" style="margin-top:10px">Quick add</p><div class="chips" id="chips"></div>
+  <input type="text" id="at" placeholder="Appointment (e.g. OB checkup)" aria-label="Appointment name">
+  <div class="two"><input type="date" id="ad" aria-label="Date"><input type="time" id="atm" aria-label="Time"></div>
+  <button class="btn alt" id="aadd" style="width:100%;margin-top:10px">Add appointment</button>
+  <p class="soft small" style="margin-top:8px">Reminders show here when you open Bloom. For phone alerts, also add visits to your calendar app.</p></div>
+  <div class="card"><div class="row"><div><h2>Kick counter</h2><p class="soft small">Tap for each movement you feel today.</p></div>
+  <button class="kick" id="kick" aria-label="Count a kick">🦶</button></div><p class="big" id="kc" style="font-size:26px;margin-top:8px"></p></div>
+  <footer>Sizes are averages and every baby grows differently. Bloom doesn’t replace your midwife or doctor, so call them with any worry.</footer>`;
+  $('#dueline').textContent='Due '+dueTxt;
+  const sl=$('#sl');sl.value=view;
+  function upd(){
+    const e=pick(view),cur=view===wk;
+    $('#fruit').textContent=e[1];
+    $('#wk').textContent='Week '+view;
+    $('#size').innerHTML='About the size of a <b>'+e[2]+'</b>';
+    $('#len').textContent=cm(e[3]);$('#len2').textContent=inch(e[3]);$('#wgt').textContent=wt(e[4]);
+    $('#gb').style.width=Math.max(2,e[3]/51*100)+'%';
+    $('#dev').textContent=e[5];$('#mom').textContent=e[6];
+    const tri=view<14?1:view<28?2:3;
+    document.querySelectorAll('#tri span').forEach((s,i)=>s.classList.toggle('on',i<tri));
+    $('#ring').style.strokeDashoffset=C*(1-view/40);
+    $('#now').style.visibility=cur?'hidden':'visible';
+    let t;
+    if(cur){t=left>0?(left===1?'1 day to go':left+' days to go'):left===0?'Due today! 🎉':Math.abs(left)+' days past due. Any moment now 💛';}
+    else t=view<wk?'A look back':'A peek ahead';
+    $('#pill').textContent=t;
+  }
+  sl.oninput=()=>{view=+sl.value;upd()};
+  $('#now').onclick=()=>{view=Math.max(4,wk);sl.value=view;upd()};
+  $('#chg').onclick=()=>{setup()};
+  const kk='bloom-kicks-'+iso(today());kicks=+store.get(kk)||0;
+  const kc=()=>$('#kc').textContent=kicks===0?'No kicks yet today':kicks+(kicks===1?' kick':' kicks')+' today';kc();
+  $('#kick').onclick=()=>{kicks++;store.set(kk,kicks);kc()};
+  let A=[];try{A=JSON.parse(store.get('bloom-appts')||'[]')}catch(e){}
+  const save=()=>store.set('bloom-appts',JSON.stringify(A));
+  const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const when=a=>parse(a.d).toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'})+(a.t?' at '+new Date(2000,0,1,...a.t.split(':').map(Number)).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}):'');
+  const days=a=>Math.round((parse(a.d)-today())/DAY);
+  const rel=a=>{const n=days(a);return n===0?'today':n===1?'tomorrow':'in '+n+' days'};
+  function rA(){
+    A.sort((x,y)=>(x.d+(x.t||'')).localeCompare(y.d+(y.t||'')));
+    const up=A.filter(a=>days(a)>=0),n=up[0];
+    $('#alist').innerHTML=up.length?up.map(a=>`<div class="ai"><div><b>${esc(a.n)}</b><br><span class="soft small">${when(a)} (${rel(a)})</span></div><button class="link" data-i="${a.id}" aria-label="Delete ${esc(a.n)}">Delete</button></div>`).join(''):'<p class="soft small">Nothing scheduled yet.</p>';
+    $('#next').innerHTML=n?`<div class="nextb${days(n)<=3?' soon':''}"><b>Next: ${esc(n.n)}</b><br>${when(n)} (${rel(n)})</div>`:'';
+    $('#alist').querySelectorAll('button').forEach(b=>b.onclick=()=>{A=A.filter(x=>x.id!==+b.dataset.i);save();rA()});
+  }
+  [['OB checkup',0],['Anatomy scan',20],['Glucose test',26],['Group B strep test',36]].forEach(([t,w])=>{const b=document.createElement('button');b.className='chip';b.textContent=t;b.onclick=()=>{$('#at').value=t;if(w){const x=new Date(due);x.setDate(x.getDate()-(280-7*w));$('#ad').value=iso(x)}$('#ad').focus()};$('#chips').appendChild(b)});
+  $('#aadd').onclick=()=>{const n=$('#at').value.trim(),d=$('#ad').value;if(!n){$('#at').focus();return}if(!d){$('#ad').focus();return}A.push({id:Date.now(),n:n.slice(0,60),d,t:$('#atm').value});save();$('#at').value='';$('#ad').value='';$('#atm').value='';rA()};
+  rA();
+  upd();
+  if(wk<4)$('#pill').textContent='Early days: baby’s journey begins at week 4';
+}
+
+const saved=store.get('bloom-due');
+if(saved){due=parse(saved);view=null;main()}else setup();
+</script></body></html>

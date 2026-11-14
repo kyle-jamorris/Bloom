@@ -57,17 +57,38 @@ input[type=text],input[type=time]{width:100%;min-width:0;padding:13px;border-rad
 .chip{background:var(--glow);border:0;color:var(--ink);border-radius:99px;padding:7px 12px;font:600 13px Nunito,sans-serif;cursor:pointer}
 .nextb{border-radius:18px;padding:14px 16px;margin-bottom:14px;background:var(--card);border:2px solid var(--mint)}
 .nextb.soon{background:var(--butter);border-color:var(--butter);color:#4A3513}
-.baby{width:128px;height:128px}.baby svg{width:100%;height:100%;animation:bob 4s ease-in-out infinite}
-@media(prefers-reduced-motion:reduce){.baby svg{animation:none}}
-.nest .wk{margin-top:2px;font-size:26px}
-.sizerow{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:16px;text-align:left}
-.sizerow .size{margin:0;font-size:17px;line-height:1.35}
-.prod{width:84px;height:84px;flex:none;background:var(--card);border:1px solid var(--line);border-radius:24px;padding:10px;box-shadow:0 6px 18px rgba(0,0,0,.06)}
-.prod svg{width:100%;height:100%}
-.mstrip{position:relative;display:flex;gap:10px;overflow-x:auto;padding:4px 2px 8px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
-.ms{flex:0 0 104px;scroll-snap-align:center;background:var(--bg);border:2px solid transparent;border-radius:18px;padding:10px 8px;text-align:center;color:var(--ink);font:600 13px/1.25 Nunito,sans-serif;cursor:pointer}
-.ms i{display:flex;align-items:center;justify-content:center;width:34px;height:34px;margin:0 auto 6px;border-radius:50%;background:var(--line);font:800 15px Fraunces,serif;font-style:normal}
-.ms span{display:block}.ms.done i{background:var(--mint);color:#1D3B31}.ms.on{border-color:var(--rose);background:var(--glow)}
+.hero{margin:4px 0 14px}
+.hrow{display:flex;justify-content:space-between;align-items:flex-end;gap:10px;margin-bottom:12px}
+.hrow .wk{font-size:36px;line-height:1;margin:0}.hrow .sub{margin-top:4px;font-size:14px}
+.hrow .pill{margin:0 0 4px;text-align:center}
+.stage{position:relative;height:224px;border-radius:30px;border:1px solid var(--line);background:radial-gradient(circle at 50% 46%,var(--glow),var(--card) 78%);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.ghost{position:absolute;width:192px;height:192px;border:2px dashed var(--line);border-radius:50%}
+.ghost::after{content:'full term';position:absolute;top:-1px;left:50%;transform:translate(-50%,-50%);background:var(--card);padding:0 6px;font:700 10px Nunito,sans-serif;color:var(--soft)}
+.prod{position:relative;transition:width .4s ease,height .4s ease;filter:drop-shadow(0 8px 10px rgba(0,0,0,.18))}
+.prod svg{width:100%;height:100%;display:block}
+.peek{position:absolute;left:10px;bottom:10px;width:84px;height:84px;border-radius:50%;border:3px solid var(--card);box-shadow:0 4px 12px rgba(0,0,0,.14)}
+.peek svg{width:100%;height:100%;border-radius:50%;animation:float 4s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-3px)}}
+@media(prefers-reduced-motion:reduce){.peek svg{animation:none}.prod{transition:none}}
+.hero .size{text-align:center;margin:14px 0 0;font-size:19px}.hero .meas{text-align:center;margin-top:2px}
+.jt{position:relative;height:50px;margin-top:8px}
+.trk{position:absolute;left:0;right:0;top:21px;height:8px;border-radius:8px;background:var(--line)}
+.trk i{position:absolute;left:0;top:0;height:100%;border-radius:8px;background:var(--mint);transition:width .25s}
+#dots{position:absolute;inset:0;pointer-events:none}
+#dots i{position:absolute;top:19px;width:12px;height:12px;margin-left:-6px;border-radius:50%;background:var(--card);border:2px solid var(--line);z-index:1}
+#dots i.on{background:var(--mint);border-color:var(--mint)}
+#dots i.cur{background:var(--rose);border-color:var(--rose);transform:scale(1.35)}
+.jt input{position:absolute;inset:0;width:100%;height:100%;margin:0;background:transparent;-webkit-appearance:none;appearance:none;z-index:2}
+.jt input::-webkit-slider-runnable-track{height:50px;background:transparent}
+.jt input::-moz-range-track{background:transparent}
+.jt input::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;margin-top:11px;border-radius:50%;background:var(--rose);border:4px solid var(--card);box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.jt input::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--rose);border:4px solid var(--card)}
+.tlab{position:relative;height:16px;font-size:11px;font-weight:700;color:var(--soft)}
+.tlab span{position:absolute;left:calc(14px + (100% - 28px) * var(--f));transform:translateX(-50%);white-space:nowrap}
+.mcap{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:22px;padding:10px 8px;margin-top:8px}
+.mtxt{flex:1;min-width:0;text-align:center}.mtxt small{display:block;color:var(--soft);font-weight:700;font-size:12px}
+.mtxt b{display:block;font:800 19px Fraunces,serif}.mtxt span{display:block;color:var(--soft);font-size:14px;line-height:1.35}
+.mb{flex:none;width:46px;height:46px;border-radius:50%;border:0;background:var(--glow);color:var(--ink);font-size:24px;cursor:pointer}.mb:disabled{opacity:.3}
 footer{font-size:12px;color:var(--soft);text-align:center;margin-top:18px}
 </style></head><body><main id="app"></main>
 <script>
@@ -148,22 +169,29 @@ const P={
 38:`<g transform="translate(32 34) scale(.85) translate(-32 -34)"><ellipse cx="32" cy="34" rx="25" ry="20" fill="#3FA34D"/><g stroke="#2B7A37" stroke-width="3" fill="none" stroke-linecap="round"><path d="M32 14C26 24 26 44 32 54M20 17C13 28 15 42 22 51M44 17C51 28 49 42 42 51"/></g><ellipse cx="22" cy="24" rx="6" ry="3" fill="#fff" opacity=".25"/></g>`,
 40:`<g transform="translate(0 -9)"><path d="M6 30A26 26 0 0 0 58 30Z" fill="#3FA34D"/><path d="M10 30A22 22 0 0 0 54 30Z" fill="#F8E7E7"/><path d="M13 30A19 19 0 0 0 51 30Z" fill="#FF5A6E"/><g fill="#2B2B3A"><ellipse cx="24" cy="38" rx="1.6" ry="2.6"/><ellipse cx="32" cy="43" rx="1.6" ry="2.6"/><ellipse cx="40" cy="38" rx="1.6" ry="2.6"/><ellipse cx="32" cy="35" rx="1.6" ry="2.6"/></g></g>`};
 P[3]=P[2];
-const sk='#FFC9B5',sh='#F4A58E',ey='#5B3A4A';
+Object.assign(P,{"4": "<g fill=\"#3B3A5C\"><ellipse cx=\"22\" cy=\"30\" rx=\"8\" ry=\"6\" transform=\"rotate(-25 22 30)\"/><ellipse cx=\"40\" cy=\"26\" rx=\"8\" ry=\"6\" transform=\"rotate(15 40 26)\"/><ellipse cx=\"32\" cy=\"42\" rx=\"8\" ry=\"6\" transform=\"rotate(-5 32 42)\"/></g><g fill=\"#8A8ABB\" opacity=\".7\"><ellipse cx=\"19\" cy=\"28\" rx=\"2.5\" ry=\"1.5\"/><ellipse cx=\"37\" cy=\"24\" rx=\"2.5\" ry=\"1.5\"/><ellipse cx=\"29\" cy=\"40\" rx=\"2.5\" ry=\"1.5\"/></g>", "6": "<ellipse cx=\"25\" cy=\"34\" rx=\"15\" ry=\"11\" fill=\"#C9792E\" transform=\"rotate(-15 25 34)\"/><ellipse cx=\"40\" cy=\"32\" rx=\"15\" ry=\"11\" fill=\"#E08F3C\" transform=\"rotate(10 40 32)\"/><ellipse cx=\"36\" cy=\"29\" rx=\"8\" ry=\"3.5\" fill=\"#fff\" opacity=\".3\" transform=\"rotate(10 36 29)\"/>", "8": "<path d=\"M16 22C28 10 52 14 54 30C55 40 44 44 38 36C34 31 28 33 28 40C28 48 20 54 14 46C8 38 8 28 16 22Z\" fill=\"#A32D3F\"/><ellipse cx=\"38\" cy=\"22\" rx=\"9\" ry=\"3\" fill=\"#fff\" opacity=\".3\" transform=\"rotate(-10 38 22)\"/><ellipse cx=\"22\" cy=\"44\" rx=\"3\" ry=\"2\" fill=\"#7A1F2D\" transform=\"rotate(30 22 44)\"/>", "24": "<ellipse cx=\"32\" cy=\"30\" rx=\"12\" ry=\"24\" fill=\"#FFD43B\"/><g stroke=\"#E5B019\" stroke-width=\"1.5\"><path d=\"M32 7v46M25 9v42M39 9v42M21 20h22M21 30h22M21 40h22\"/></g><path d=\"M32 57C15 53 11 36 20 25C22 40 27 49 32 57Z\" fill=\"#6BB04A\"/><path d=\"M32 57C49 53 53 36 44 25C42 40 37 49 32 57Z\" fill=\"#5BA043\"/>"});
+const sk='#FFC7AE',sd='#F6A98E',ey='#6B4A58',hr='#C98B6B';
 function baby(w){
-  const b=w<4?0:w<7?1:w<12?2:w<20?3:w<30?4:5,o=`fill="${sk}" stroke="${sh}" stroke-width="2"`;
-  let s='<svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="56" fill="var(--glow)"/>';
-  if(!b)return s+`<g ${o}><circle cx="52" cy="54" r="12"/><circle cx="70" cy="52" r="12"/><circle cx="60" cy="68" r="12"/><circle cx="76" cy="68" r="10"/><circle cx="45" cy="70" r="10"/></g><circle cx="60" cy="60" r="5" fill="${sh}" opacity=".5"/></svg>`;
-  const H=[0,13,18,23,22,24][b],R=[0,9,13,17,19,21][b],A=[0,3,5,7,8,9][b];
-  if(b<3)s+=`<path d="M76 90Q92 96 88 ${b<2?110:104}" stroke="${sk}" stroke-width="${b<2?7:5}" fill="none" stroke-linecap="round"/>`;
-  s+=`<ellipse cx="66" cy="76" rx="${R}" ry="${R*1.25}" transform="rotate(-25 66 76)" ${o}/><ellipse cx="80" cy="98" rx="${A+1}" ry="${A*1.6}" ${o}/><ellipse cx="56" cy="72" rx="${A*1.6}" ry="${A}" transform="rotate(-30 56 72)" ${o}/><circle cx="46" cy="46" r="${H}" ${o}/>`;
-  const f=`stroke="${ey}" stroke-width="2" fill="none" stroke-linecap="round"`;
-  if(b<3)s+=`<circle cx="${b<2?39:38}" cy="${b<2?43:45}" r="2.2" fill="${ey}"/>`;
-  else{s+=`<path d="M34 48q4 3 8 0M50 48q4 3 8 0" ${f}/><circle cx="33" cy="56" r="4" fill="#FF9DB5" opacity=".6"/><circle cx="59" cy="56" r="4" fill="#FF9DB5" opacity=".6"/>`;
-   if(b>3)s+=`<circle cx="46" cy="54" r="1.8" fill="${sh}"/>`;
-   if(b>4)s+=`<path d="M42 61q4 3 8 0M40 24q6-8 12 0" ${f}/>`;}
-  return s+'</svg>';
+  const b=w<4?0:w<7?1:w<12?2:w<20?3:w<30?4:5;
+  let s='<svg viewBox="0 0 120 120"><defs><radialGradient id="bgr" cx=".4" cy=".35" r=".8"><stop offset="0" stop-color="#fff" stop-opacity=".9"/><stop offset="1" style="stop-color:var(--glow)"/></radialGradient></defs><circle cx="60" cy="60" r="57" fill="url(#bgr)"/><g fill="#fff" opacity=".6"><circle cx="22" cy="88" r="3"/><circle cx="98" cy="28" r="2.5"/><circle cx="100" cy="86" r="4"/></g>';
+  if(!b)return s+`<g fill="#FFD3C0" stroke="${sd}" stroke-width="1.5"><circle cx="52" cy="54" r="12"/><circle cx="71" cy="52" r="12"/><circle cx="60" cy="68" r="12"/><circle cx="77" cy="68" r="10"/><circle cx="45" cy="70" r="10"/></g><g fill="#fff" opacity=".6"><circle cx="48" cy="50" r="3"/><circle cx="67" cy="48" r="3"/><circle cx="56" cy="64" r="3"/></g></svg>`;
+  if(b<3){
+    const t=b===1?22:28,hd=b===1?17:22;
+    s+=`<path d="M72 30C46 28 34 58 46 80C56 98 84 94 86 74" stroke="${sk}" stroke-width="${t}" fill="none" stroke-linecap="round"/><circle cx="70" cy="36" r="${hd}" fill="${sk}"/><path d="M68 32C50 32 42 56 50 74" stroke="#fff" stroke-opacity=".35" stroke-width="5" fill="none" stroke-linecap="round"/>`;
+    if(b===1)s+=`<path d="M84 62Q90 60 92 58" stroke="#FFE2A0" stroke-width="3" fill="none"/><circle cx="97" cy="54" r="10" fill="#FFE9B0"/><circle cx="94" cy="51" r="3" fill="#fff" opacity=".7"/>`;
+    if(b===1&&w>=6)s+=`<circle cx="58" cy="64" r="4" fill="#FF6F91"><animate attributeName="r" values="3;5;3" dur="1s" repeatCount="indefinite"/></circle>`;
+    if(b===2)s+=`<circle cx="50" cy="62" r="6" fill="${sd}"/><circle cx="64" cy="95" r="6.5" fill="${sd}"/><path d="M62 38q4 4 9 0" stroke="${ey}" stroke-width="2.2" fill="none" stroke-linecap="round"/><circle cx="60" cy="46" r="3.5" fill="#FF9DB5" opacity=".6"/>`;
+    return s+'</svg>';
+  }
+  const k=b===3?.88:b===4?1:1.1;
+  s+=`<g transform="translate(60 64) scale(${k}) translate(-60 -64)"><path d="M82 78Q102 76 98 98" stroke="#FFB8CB" stroke-width="4" fill="none" stroke-linecap="round"/><ellipse cx="70" cy="80" rx="25" ry="28" transform="rotate(-20 70 80)" fill="${sk}"/><ellipse cx="78" cy="100" rx="17" ry="11" transform="rotate(-10 78 100)" fill="${sd}"/><ellipse cx="88" cy="104" rx="9" ry="6" fill="${sk}"/><circle cx="46" cy="48" r="25" fill="${sk}"/><ellipse cx="55" cy="74" rx="11" ry="8" transform="rotate(-25 55 74)" fill="${sd}"/><circle cx="46" cy="68" r="6.5" fill="${sk}"/><path d="M33 50q4 4 8 0M51 50q4 4 8 0" stroke="${ey}" stroke-width="2.2" fill="none" stroke-linecap="round"/><circle cx="32" cy="58" r="4.5" fill="#FF9DB5" opacity=".6"/><circle cx="60" cy="58" r="4.5" fill="#FF9DB5" opacity=".6"/>`;
+  if(b>3)s+=`<circle cx="46" cy="56" r="1.8" fill="${sd}"/><path d="M42 62q4 3 8 0" stroke="${ey}" stroke-width="2" fill="none" stroke-linecap="round"/>`;
+  if(b>4)s+=`<path d="M38 26q8-9 16 0" stroke="${hr}" stroke-width="3.5" fill="none" stroke-linecap="round"/>`;
+  return s+'</g></svg>';
 }
-const MS=[[3,'Implantation'],[6,'Heartbeat'],[8,'Fingers and toes'],[10,'Organs in place'],[12,'Makes a fist'],[16,'Hears your voice'],[18,'Yawns and hiccups'],[20,'Halfway!'],[24,'Lungs branching'],[26,'Eyes opening'],[28,'Blinks and dreams'],[32,'Practices breathing'],[36,'Dropping low'],[40,'Meet baby']];
+
+const VB={2:'16 14 32 32',3:'16 14 32 32',4:'10 16 42 36',5:'18 8 28 48',6:'8 16 50 32',7:'10 12 44 44',8:'6 8 52 50',9:'8 6 52 56',10:'10 12 46 42',12:'10 10 46 48',14:'4 8 56 44',16:'6 4 52 56'};
+const MS=[[3,'Implantation','The embryo settles into the lining of the uterus.'],[6,'Heartbeat','A tiny heart begins to flicker.'],[8,'Fingers and toes','Little hands and feet start to form.'],[10,'Organs in place','All the vital organs have formed.'],[12,'Makes a fist','Reflexes arrive and fingers curl.'],[16,'Hears your voice','Ears are in place and picking up sound.'],[18,'Yawns and hiccups','Baby is stretching and practicing.'],[20,'Halfway!','Swallowing begins and a waxy coat protects the skin.'],[24,'Lungs branching','Hearing sharpens. Baby may jump at loud noises.'],[26,'Eyes opening','Baby responds to light and your voice.'],[28,'Blinks and dreams','Fat stores build up under the skin.'],[32,'Practices breathing','Most babies turn head-down soon.'],[36,'Dropping low','Baby settles into the pelvis.'],[40,'Meet baby','Full term. Ready to meet you!']];
 const DAY=864e5,$=s=>document.querySelector(s),app=$('#app');
 const today=()=>{const n=new Date();return new Date(n.getFullYear(),n.getMonth(),n.getDate())};
 const parse=s=>{const[a,b,c]=s.split('-').map(Number);return new Date(a,b-1,c)};
@@ -205,17 +233,16 @@ function main(){
   const C=2*Math.PI*112;
   app.innerHTML=`<div class="top"><div><h1>Hey, dad 💙</h1><p class="soft small" id="dueline"></p><p class="soft small" id="srcline"></p></div>
   <button class="link" id="chg">Change date</button></div>
-  <section class="hero"><div class="ringwrap">
-  <svg width="250" height="250" viewBox="0 0 250 250" aria-hidden="true"><circle cx="125" cy="125" r="112" fill="none" stroke="var(--line)" stroke-width="12"/>
-  <circle id="ring" cx="125" cy="125" r="112" fill="none" stroke="var(--rose)" stroke-width="12" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C}" style="transition:stroke-dashoffset .5s"/></svg>
-  <div class="nest"><div class="baby" id="baby"></div><div class="wk" id="wk"></div></div></div>
-  <div class="sizerow"><div class="prod" id="prod"></div><p class="size" id="size"></p></div><span class="pill" id="pill"></span></section>
-  <div id="next"></div>
-  <div class="card"><div class="row"><h2>Browse the weeks</h2><button class="link" id="now">Back to today</button></div>
-  <input type="range" id="sl" min="2" max="40" step="1" aria-label="Pregnancy week">
-  <div class="tri" id="tri"><span></span><span></span><span></span></div>
-  <div class="tl"><span>Trimester 1</span><span>Trimester 2</span><span>Trimester 3</span></div></div>
-  <div class="card"><h2>Milestones</h2><div class="mstrip" id="ms"></div></div>
+  <section class="hero">
+  <div class="hrow"><div><div class="wk" id="wk"></div><div class="sub" id="sub"></div></div><span class="pill" id="pill"></span></div>
+  <div class="stage"><div class="ghost"></div><div class="prod" id="prod"></div><div class="peek" id="baby"></div></div>
+  <p class="size" id="size"></p><p class="small soft meas" id="meas"></p>
+  <div class="jt"><div class="trk"><i id="jf"></i></div><div id="dots"></div><input type="range" id="sl" min="2" max="40" step="1" aria-label="Pregnancy week"></div>
+  <div class="tlab"><span style="--f:.16">Trimester 1</span><span style="--f:.5">Trimester 2</span><span style="--f:.84">Trimester 3</span></div>
+  <div class="mcap"><button class="mb" id="mprev" aria-label="Previous milestone">‹</button><div class="mtxt"><small id="mw"></small><b id="mt"></b><span id="md"></span></div><button class="mb" id="mnext" aria-label="Next milestone">›</button></div>
+  <div style="text-align:center"><button class="link" id="now">Back to today</button></div>
+</section>
+<div id="next"></div>
   <div class="card"><h2>How big is baby?</h2><div class="stats"><div class="stat soft small"><span id="llab">Length</span><b id="len"></b><span id="len2"></span></div><div class="stat soft small">Weight<b id="wgt"></b></div></div>
   <div class="bar" aria-hidden="true"><i id="gb"></i></div><p class="soft small" style="margin-top:6px">Growth toward full-term weight (about 3.4 kg)</p></div>
   <div class="card"><h2>What’s happening</h2><p id="dev"></p></div>
@@ -231,20 +258,31 @@ function main(){
   <footer>Sizes are averages and every baby grows differently. Bloom Dad doesn’t replace her midwife or doctor. If something worries you, call them.</footer>`;
   $('#dueline').textContent='Due '+dueTxt;$('#srcline').textContent=store.get('bloomdad-src')||'';
   const sl=$('#sl');sl.value=view;
-  const ms=$('#ms');MS.forEach(([w,t])=>{const b=document.createElement('button');b.className='ms';b.dataset.w=w;b.innerHTML='<i>'+w+'</i><span>'+t+'</span>';b.onclick=()=>{view=w;sl.value=w;upd()};ms.appendChild(b)});
+  let pt=null,nt=null;
+  MS.forEach(([w])=>{const d=document.createElement('i');d.dataset.w=w;d.style.left='calc(14px + (100% - 28px) * '+((w-2)/38)+')';$('#dots').appendChild(d)});
+  $('#mprev').onclick=()=>{if(pt!=null){view=pt;sl.value=view;upd()}};
+  $('#mnext').onclick=()=>{if(nt!=null){view=nt;sl.value=view;upd()}};
   function upd(){
-    const e=pick(view),cur=view===wk;
-    $('#baby').innerHTML=baby(view);$('#prod').innerHTML='<svg viewBox="0 0 64 64">'+P[e[0]]+'</svg>';
+    const e=pick(view),cur=view===wk,f=(view-2)/38,tri=view<14?1:view<28?2:3;
+    const px=Math.round(40+138*Math.cbrt(Math.max(e[4],.3)/3400)),pr=$('#prod');
+    pr.style.width=pr.style.height=px+'px';
+    pr.innerHTML='<svg viewBox="'+(VB[e[0]]||'0 0 64 64')+'">'+P[e[0]]+'</svg>';
+    $('#baby').innerHTML=baby(view);
     $('#wk').textContent='Week '+view;
+    $('#sub').textContent=(cur?wk+' weeks, '+dd+(dd===1?' day':' days')+' · ':'')+'Trimester '+tri;
     $('#size').innerHTML='About the size of a <b>'+e[2]+'</b>';
+    $('#meas').textContent=(e[3]<0.1?'Microscopic':cm(e[3])+' ('+inch(e[3])+')')+' · '+wt(e[4]);
     $('#len').textContent=cm(e[3]);$('#llab').textContent=e[3]<0.1?'Length':view<20?'Length (head to rump)':'Length (head to heel)';$('#len2').textContent=inch(e[3]);$('#wgt').textContent=wt(e[4]);
     $('#gb').style.width=Math.max(2,e[4]/3400*100)+'%';
     $('#dev').textContent=e[5];$('#mom').textContent=DT[D.indexOf(e)];
-    const tri=view<14?1:view<28?2:3;
-    document.querySelectorAll('#tri span').forEach((s,i)=>s.classList.toggle('on',i<tri));
-    $('#ring').style.strokeDashoffset=C*(1-view/40);
-    const am=MS.filter(m=>m[0]<=view).pop();let onb=null;ms.querySelectorAll('.ms').forEach(b=>{const w=+b.dataset.w,on=am&&w===am[0];b.classList.toggle('done',w<=wk);b.classList.toggle('on',!!on);if(on)onb=b});
-    if(onb)ms.scrollTo({left:onb.offsetLeft-ms.clientWidth/2+onb.offsetWidth/2,behavior:'smooth'});
+    $('#jf').style.width='calc(14px + (100% - 28px) * '+f+')';
+    const am=MS.filter(m=>m[0]<=view).pop()||MS[0],ix=MS.indexOf(am),ahead=view<MS[0][0];
+    document.querySelectorAll('#dots i').forEach(d=>{const w=+d.dataset.w;d.classList.toggle('on',w<=view);d.classList.toggle('cur',w===am[0]&&!ahead)});
+    $('#mw').textContent=(ahead||am[0]>wk?'Coming up':'Reached')+' · Week '+am[0];
+    $('#mt').textContent=am[1];$('#md').textContent=am[2];
+    pt=ahead?null:view>am[0]?am[0]:ix>0?MS[ix-1][0]:null;
+    nt=ahead?MS[0][0]:ix<MS.length-1?MS[ix+1][0]:null;
+    $('#mprev').disabled=pt==null;$('#mnext').disabled=nt==null;
     $('#now').style.visibility=cur?'hidden':'visible';
     let t;
     if(cur){t=left>0?(left===1?'1 day to go':left+' days to go'):left===0?'Due today! 🎉':Math.abs(left)+' days past due. Any moment now 💛';}

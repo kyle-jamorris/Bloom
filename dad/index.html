@@ -57,11 +57,24 @@ input[type=text],input[type=time]{width:100%;min-width:0;padding:13px;border-rad
 .chip{background:var(--glow);border:0;color:var(--ink);border-radius:99px;padding:7px 12px;font:600 13px Nunito,sans-serif;cursor:pointer}
 .nextb{border-radius:18px;padding:14px 16px;margin-bottom:14px;background:var(--card);border:2px solid var(--mint)}
 .nextb.soon{background:var(--butter);border-color:var(--butter);color:#4A3513}
+.baby{width:128px;height:128px}.baby svg{width:100%;height:100%;animation:bob 4s ease-in-out infinite}
+@media(prefers-reduced-motion:reduce){.baby svg{animation:none}}
+.nest .wk{margin-top:2px;font-size:26px}
+.sizerow{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:16px;text-align:left}
+.sizerow .size{margin:0;font-size:17px;line-height:1.35}
+.prod{width:84px;height:84px;flex:none;background:var(--card);border:1px solid var(--line);border-radius:24px;padding:10px;box-shadow:0 6px 18px rgba(0,0,0,.06)}
+.prod svg{width:100%;height:100%}
+.mstrip{position:relative;display:flex;gap:10px;overflow-x:auto;padding:4px 2px 8px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
+.ms{flex:0 0 104px;scroll-snap-align:center;background:var(--bg);border:2px solid transparent;border-radius:18px;padding:10px 8px;text-align:center;color:var(--ink);font:600 13px/1.25 Nunito,sans-serif;cursor:pointer}
+.ms i{display:flex;align-items:center;justify-content:center;width:34px;height:34px;margin:0 auto 6px;border-radius:50%;background:var(--line);font:800 15px Fraunces,serif;font-style:normal}
+.ms span{display:block}.ms.done i{background:var(--mint);color:#1D3B31}.ms.on{border-color:var(--rose);background:var(--glow)}
 footer{font-size:12px;color:var(--soft);text-align:center;margin-top:18px}
 </style></head><body><main id="app"></main>
 <script>
 // [week, emoji, size comparison, length cm, weight g, development, note for mom]
 const D=[
+[2,'✨','pinpoint',0,0,'Baby is just a few cells, far too small to see. Around now the egg and sperm have met, or your embryo has just been transferred.','Nothing to feel yet. This is the waiting stretch, so be kind to yourself.'],
+[3,'✨','pinpoint',0,0,'The embryo is dividing and getting ready to settle into the lining of your uterus (implantation).','Some women notice light spotting or cramps, and many feel nothing. Your clinic will tell you when to test.'],
 [4,'⚫','poppy seed',0.1,0,'A tiny ball of cells is nestling into the lining of your uterus. Big things are starting!','You may feel nothing yet, or just a missed period. A test can confirm it.'],
 [5,'🌱','apple seed',0.3,0,'The heart tube is forming and will start to flutter soon. The brain and spine are beginning too.','Tender breasts, tiredness and a queasy tummy can show up.'],
 [6,'🫘','lentil',0.6,0,'A tiny heartbeat is flickering, and little buds that become arms and legs have appeared.','Nausea may be building. Small, frequent snacks can help.'],
@@ -74,17 +87,19 @@ const D=[
 [16,'🥑','avocado',11.6,100,'Baby’s ears are in place and may pick up your voice and heartbeat.','Soon you might feel first flutters, like bubbles or tiny taps.'],
 [18,'🫑','bell pepper',14.2,190,'Baby is yawning, hiccupping and stretching. Fingerprints are forming.','Your anatomy scan usually happens between weeks 18 and 22.'],
 [20,'🍌','banana',25,300,'Halfway there! Baby is swallowing, and a waxy coat called vernix protects the skin.','The bump is likely showing. A great time to start belly photos.'],
-[22,'🥭','mango',28,430,'Eyebrows and eyelids are in place, and baby is practising a grip.','Movements get stronger. Notice when baby is awake and asleep.'],
+[22,'🥭','mango',28,430,'Eyebrows and eyelids are in place, and baby is practicing a grip.','Movements get stronger. Notice when baby is awake and asleep.'],
 [24,'🌽','ear of corn',30,600,'The lungs are growing branches, and hearing is sharper. Loud noises may make baby jump.','A glucose screening is often done around now.'],
 [26,'🥕','large carrot',35,760,'Eyes begin to open, and baby responds to light and your voice.','Backaches and leg cramps are common. Stretch gently and drink water.'],
 [28,'🍆','eggplant',37,1000,'Baby can blink and dream while fat stores build under the skin.','Welcome to trimester three! Many moms start counting kicks now.'],
 [30,'🥬','cabbage',40,1300,'The brain is forming grooves and folds, and bones are hardening.','Heartburn and short breath are common. Prop yourself up with pillows.'],
-[32,'🎃','squash',42,1700,'Baby is practising breathing. Most turn head-down in the coming weeks.','Pack your hospital bag and sketch your birth preferences.'],
+[32,'🎃','squash',42,1700,'Baby is practicing breathing. Most turn head-down in the coming weeks.','Pack your hospital bag and sketch your birth preferences.'],
 [34,'🍈','cantaloupe',45,2100,'The lungs are maturing and baby gains about 200 g a week.','Practice contractions (Braxton Hicks) may appear. Call your provider if unsure.'],
 [36,'🍈','honeydew',47,2600,'Baby is dropping lower into your pelvis, getting ready.','Checkups become weekly. Rest up and install the car seat.'],
 [38,'🍉','mini watermelon',49,3100,'Baby is nearly ready. The organs are mature and the grip is strong.','Any day now. Keep your phone charged and your bag by the door.'],
 [40,'🍉','small watermelon',51,3400,'Full term! Baby is ready to meet you.','Due dates are estimates. Most babies arrive within two weeks either side.']];
 const DT=[
+'The waiting is hard. Keep things calm and plan something low-key and kind.',
+'Stay close and let her set the pace on testing. Follow your clinic’s timing.',
 'It’s early and she may not know yet. Be patient and be her calm place to land.',
 'Take over strong-smelling cooking. Smells can set off nausea fast.',
 'Keep crackers and water by the bed, and offer to handle dinner.',
@@ -107,19 +122,61 @@ const DT=[
 'Know the route to the hospital. Keep gas in the car and the bag by the door.',
 'Stay close. Your job is calm, snacks and a steady voice when it begins.',
 'Any day now. Rest while you can and keep your phone on loud.'];
+const lf=(x,y,r)=>`<ellipse cx="${x}" cy="${y}" rx="8" ry="4" fill="#4FA33A" transform="rotate(${r} ${x} ${y})"/>`;
+const P={
+2:`<circle cx="32" cy="32" r="4" fill="#E5628A"/><g fill="#FFB3CB"><circle cx="22" cy="24" r="2"/><circle cx="43" cy="26" r="2.5"/><circle cx="40" cy="42" r="2"/><circle cx="24" cy="40" r="1.6"/></g>`,
+4:`<ellipse cx="32" cy="33" rx="9" ry="8" fill="#3B3A5C"/><ellipse cx="29" cy="30" rx="3" ry="2" fill="#7A7AAA"/>`,
+5:`<path d="M32 12C43 27 46 40 32 52C18 40 21 27 32 12Z" fill="#7A4A2A"/><path d="M30 22C26 30 26 38 30 44" stroke="#A8693F" stroke-width="3" fill="none" stroke-linecap="round"/>`,
+6:`<ellipse cx="32" cy="32" rx="19" ry="12" fill="#C8884B"/><ellipse cx="32" cy="32" rx="12" ry="6" fill="#DDA56A"/>`,
+7:`<circle cx="32" cy="34" r="19" fill="#4A5BB5"/><path d="M32 22l4 5-4 3-4-3z" fill="#2B3A87"/><ellipse cx="25" cy="29" rx="4" ry="2.5" fill="#fff" opacity=".35"/>`,
+8:`<path d="M14 36C12 20 30 12 43 19C56 26 52 45 38 49C27 52 15 47 14 36Z" fill="#B03A48"/><ellipse cx="29" cy="26" rx="8" ry="3" fill="#fff" opacity=".3" transform="rotate(-20 29 26)"/>`,
+9:`<path d="M35 10v14" stroke="#6B4A2A" stroke-width="3" stroke-linecap="round"/>${lf(44,14,-20)}<g fill="#7B4FB5"><circle cx="21" cy="30" r="7.5"/><circle cx="35" cy="30" r="7.5"/><circle cx="49" cy="30" r="7.5"/><circle cx="28" cy="41" r="7.5"/><circle cx="42" cy="41" r="7.5"/><circle cx="35" cy="52" r="7.5"/></g><g fill="#fff" opacity=".35"><circle cx="19" cy="28" r="2"/><circle cx="33" cy="28" r="2"/><circle cx="47" cy="28" r="2"/><circle cx="26" cy="39" r="2"/><circle cx="40" cy="39" r="2"/></g>`,
+10:`<ellipse cx="32" cy="36" rx="19" ry="16" fill="#F59A1F"/><ellipse cx="25" cy="30" rx="6" ry="3" fill="#fff" opacity=".3"/><circle cx="32" cy="21" r="2.5" fill="#2F7D2A"/>${lf(41,17,-25)}`,
+12:`<circle cx="32" cy="34" r="19" fill="#8CC63F"/><circle cx="32" cy="34" r="13" fill="#B5DB5E" opacity=".5"/><ellipse cx="25" cy="27" rx="5" ry="2.5" fill="#fff" opacity=".35"/><circle cx="32" cy="14" r="2.5" fill="#2F7D2A"/>${lf(41,13,-20)}`,
+14:`<path d="M9 33Q13 18 32 17Q51 18 55 33Q51 48 32 49Q13 48 9 33Z" fill="#FFD43B"/><path d="M6 33l6-3v6zM58 33l-6-3v6z" fill="#FFD43B"/><ellipse cx="26" cy="27" rx="7" ry="2.5" fill="#fff" opacity=".4"/><rect x="30" y="11" width="3" height="7" fill="#2F7D2A"/>${lf(41,12,-20)}`,
+16:`<path d="M32 6C41 6 42 20 48 30C55 41 48 58 32 58C16 58 9 41 16 30C22 20 23 6 32 6Z" fill="#3F6B2A"/><path d="M32 12C38 12 38 23 43 31C48 40 43 53 32 53C21 53 16 40 21 31C26 23 26 12 32 12Z" fill="#DDE98A"/><circle cx="32" cy="40" r="9" fill="#7A4A2A"/><ellipse cx="29" cy="37" rx="3" ry="2" fill="#fff" opacity=".25"/>`,
+18:`<path d="M18 22C9 27 9 46 20 53C27 57 37 57 44 53C55 46 55 27 46 22C40 18 24 18 18 22Z" fill="#E23C3C"/><path d="M32 20C26 30 26 46 32 56M24 22C19 32 20 46 25 54M40 22C45 32 44 46 39 54" stroke="#B82828" stroke-width="2" fill="none" opacity=".6"/><rect x="29" y="8" width="7" height="12" rx="2" fill="#3C8D2F"/>`,
+20:`<path d="M13 12Q7 46 33 55Q49 58 57 46Q43 51 31 43Q21 35 24 12Z" fill="#FFD43B"/><path d="M17 20Q15 42 33 51" stroke="#fff" stroke-width="2" opacity=".4" fill="none"/><rect x="14" y="6" width="9" height="8" rx="2" fill="#7A5A2A"/>`,
+22:`<g transform="rotate(25 32 36)"><ellipse cx="32" cy="36" rx="17" ry="22" fill="#FFB02E"/><ellipse cx="38" cy="32" rx="9" ry="15" fill="#FF6B3D" opacity=".5"/></g><rect x="30" y="7" width="3" height="8" fill="#6B4A2A"/>${lf(42,11,-30)}`,
+24:`<ellipse cx="32" cy="30" rx="10" ry="23" fill="#FFD43B"/><g stroke="#E5B019" stroke-width="1.5"><path d="M32 8v44M26 10v40M38 10v40M22 20h20M22 30h20M22 40h20"/></g><path d="M32 57C17 53 13 36 21 26C23 40 27 49 32 57Z" fill="#6BB04A"/><path d="M32 57C47 53 51 36 43 26C41 40 37 49 32 57Z" fill="#5BA043"/>`,
+26:`<g fill="#4FA33A"><ellipse cx="26" cy="12" rx="3" ry="8" transform="rotate(-20 26 12)"/><ellipse cx="32" cy="9" rx="3" ry="9"/><ellipse cx="38" cy="12" rx="3" ry="8" transform="rotate(20 38 12)"/></g><path d="M22 18Q32 12 42 18L35 58Q32 61 29 58Z" fill="#FF8A2E"/><path d="M25 28h8M31 38h7M29 47h5" stroke="#D96A12" stroke-width="2" stroke-linecap="round"/>`,
+28:`<path d="M30 22C13 26 9 46 21 54C33 61 51 50 48 34C47 28 42 22 36 20Z" fill="#6B3FA0"/><ellipse cx="24" cy="38" rx="4" ry="9" fill="#fff" opacity=".25" transform="rotate(20 24 38)"/><path d="M24 20L32 14L40 20L36 27L28 27Z" fill="#3C8D2F"/><rect x="30" y="7" width="4" height="8" rx="2" fill="#3C8D2F"/>`,
+30:`<circle cx="32" cy="34" r="22" fill="#8FCB6A"/><path d="M32 12C18 22 18 46 32 56M32 12C46 22 46 46 32 56M12 34C22 30 42 30 52 34" stroke="#5BA043" stroke-width="2.5" fill="none"/><path d="M32 12v44" stroke="#CDE8A5" stroke-width="3"/>`,
+32:`<path d="M26 10h12C40 24 42 28 48 36C55 47 47 58 32 58C17 58 9 47 16 36C22 28 24 24 26 10Z" fill="#F2B15A"/><path d="M30 12C30 28 24 36 22 44" stroke="#D9923A" stroke-width="2" fill="none" opacity=".6"/><rect x="28" y="5" width="8" height="8" rx="2" fill="#7A5A2A"/>`,
+34:`<circle cx="32" cy="34" r="22" fill="#F5C07A"/><g stroke="#D9A05B" stroke-width="2" fill="none" opacity=".8"><path d="M12 28Q32 40 52 28M12 40Q32 52 52 40M22 14Q14 34 22 54M32 12v44M42 14Q50 34 42 54"/></g><rect x="30" y="8" width="4" height="6" rx="2" fill="#6B8F3A"/>`,
+36:`<circle cx="32" cy="34" r="22" fill="#CDE8A5"/><ellipse cx="24" cy="26" rx="8" ry="4" fill="#fff" opacity=".45" transform="rotate(-30 24 26)"/><circle cx="32" cy="12" r="3" fill="#6B8F3A"/>`,
+38:`<g transform="translate(32 34) scale(.85) translate(-32 -34)"><ellipse cx="32" cy="34" rx="25" ry="20" fill="#3FA34D"/><g stroke="#2B7A37" stroke-width="3" fill="none" stroke-linecap="round"><path d="M32 14C26 24 26 44 32 54M20 17C13 28 15 42 22 51M44 17C51 28 49 42 42 51"/></g><ellipse cx="22" cy="24" rx="6" ry="3" fill="#fff" opacity=".25"/></g>`,
+40:`<g transform="translate(0 -9)"><path d="M6 30A26 26 0 0 0 58 30Z" fill="#3FA34D"/><path d="M10 30A22 22 0 0 0 54 30Z" fill="#F8E7E7"/><path d="M13 30A19 19 0 0 0 51 30Z" fill="#FF5A6E"/><g fill="#2B2B3A"><ellipse cx="24" cy="38" rx="1.6" ry="2.6"/><ellipse cx="32" cy="43" rx="1.6" ry="2.6"/><ellipse cx="40" cy="38" rx="1.6" ry="2.6"/><ellipse cx="32" cy="35" rx="1.6" ry="2.6"/></g></g>`};
+P[3]=P[2];
+const sk='#FFC9B5',sh='#F4A58E',ey='#5B3A4A';
+function baby(w){
+  const b=w<4?0:w<7?1:w<12?2:w<20?3:w<30?4:5,o=`fill="${sk}" stroke="${sh}" stroke-width="2"`;
+  let s='<svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="56" fill="var(--glow)"/>';
+  if(!b)return s+`<g ${o}><circle cx="52" cy="54" r="12"/><circle cx="70" cy="52" r="12"/><circle cx="60" cy="68" r="12"/><circle cx="76" cy="68" r="10"/><circle cx="45" cy="70" r="10"/></g><circle cx="60" cy="60" r="5" fill="${sh}" opacity=".5"/></svg>`;
+  const H=[0,13,18,23,22,24][b],R=[0,9,13,17,19,21][b],A=[0,3,5,7,8,9][b];
+  if(b<3)s+=`<path d="M76 90Q92 96 88 ${b<2?110:104}" stroke="${sk}" stroke-width="${b<2?7:5}" fill="none" stroke-linecap="round"/>`;
+  s+=`<ellipse cx="66" cy="76" rx="${R}" ry="${R*1.25}" transform="rotate(-25 66 76)" ${o}/><ellipse cx="80" cy="98" rx="${A+1}" ry="${A*1.6}" ${o}/><ellipse cx="56" cy="72" rx="${A*1.6}" ry="${A}" transform="rotate(-30 56 72)" ${o}/><circle cx="46" cy="46" r="${H}" ${o}/>`;
+  const f=`stroke="${ey}" stroke-width="2" fill="none" stroke-linecap="round"`;
+  if(b<3)s+=`<circle cx="${b<2?39:38}" cy="${b<2?43:45}" r="2.2" fill="${ey}"/>`;
+  else{s+=`<path d="M34 48q4 3 8 0M50 48q4 3 8 0" ${f}/><circle cx="33" cy="56" r="4" fill="#FF9DB5" opacity=".6"/><circle cx="59" cy="56" r="4" fill="#FF9DB5" opacity=".6"/>`;
+   if(b>3)s+=`<circle cx="46" cy="54" r="1.8" fill="${sh}"/>`;
+   if(b>4)s+=`<path d="M42 61q4 3 8 0M40 24q6-8 12 0" ${f}/>`;}
+  return s+'</svg>';
+}
+const MS=[[3,'Implantation'],[6,'Heartbeat'],[8,'Fingers and toes'],[10,'Organs in place'],[12,'Makes a fist'],[16,'Hears your voice'],[18,'Yawns and hiccups'],[20,'Halfway!'],[24,'Lungs branching'],[26,'Eyes opening'],[28,'Blinks and dreams'],[32,'Practices breathing'],[36,'Dropping low'],[40,'Meet baby']];
 const DAY=864e5,$=s=>document.querySelector(s),app=$('#app');
 const today=()=>{const n=new Date();return new Date(n.getFullYear(),n.getMonth(),n.getDate())};
 const parse=s=>{const[a,b,c]=s.split('-').map(Number);return new Date(a,b-1,c)};
 const iso=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
 const pick=w=>{let r=D[0];for(const e of D)if(e[0]<=w)r=e;return r};
-const cm=v=>v<10?v.toFixed(1)+' cm':Math.round(v)+' cm';
-const inch=v=>(v/2.54).toFixed(1)+' in';
+const cm=v=>v<0.1?'microscopic':v<10?v.toFixed(1)+' cm':Math.round(v)+' cm';
+const inch=v=>v<0.1?'':(v/2.54).toFixed(1)+' in';
 const wt=g=>g<1?'under 1 g':g>=1000?(g/1000).toFixed(1)+' kg ('+(g/453.6).toFixed(1)+' lb)':g+' g ('+(g/28.35).toFixed(1)+' oz)';
 let due=null,view=0,kicks=0;
 
-function setup(msg){
-  app.innerHTML=`<div class="intro"><span class="fruit">🧸</span><h1>Congratulations, dad</h1>
+function setup(msg,canCancel){
+  app.innerHTML=`<div class="intro"><span class="fruit">🧸</span><h1>${canCancel?'Update your date':'Congratulations, dad'}</h1>
   <p class="soft" style="margin-top:8px">Enter the same date she did, so you’re always on the same week.</p></div>
   <div class="card" style="margin-top:22px">
   <label for="mode" style="margin-top:0">I know my…</label>
@@ -127,38 +184,40 @@ function setup(msg){
   <div id="agebox" style="display:none"><label for="age">Embryo age at transfer</label><select id="age"><option value="5">Day 5 (blastocyst)</option><option value="3">Day 3</option><option value="6">Day 6</option></select></div>
   <label for="dt" id="dtl">Due date</label><input type="date" id="dt">
   <p class="err" id="err">${msg||''}</p>
-  <button class="btn" id="go" style="width:100%;margin-top:6px">Start my journey</button></div>
+  <button class="btn" id="go" style="width:100%;margin-top:6px">${canCancel?'Save date':'Start my journey'}</button>${canCancel?'<button class="link" id="cancel" style="display:block;margin:12px auto 0">Cancel</button>':''}</div>
   <footer>Your date stays on this device only.</footer>`;
+  if(canCancel){$('#dt').value=iso(due);$('#cancel').onclick=()=>main()}
   $('#mode').onchange=()=>{const m=$('#mode').value;$('#agebox').style.display=m==='ivf'?'block':'none';$('#dtl').textContent=m==='ivf'?'Transfer date':m==='lmp'?'First day of last period':'Due date'};
   $('#go').onclick=()=>{
     const v=$('#dt').value;if(!v){$('#err').textContent='Pick a date to continue.';return}
-    let d=parse(v);const m=$('#mode').value;if(m==='lmp')d.setDate(d.getDate()+280);if(m==='ivf')d.setDate(d.getDate()+266-(+$('#age').value));
+    let d=parse(v);const m=$('#mode').value;if(m==='lmp')d.setDate(d.getDate()+280);if(m==='ivf')d.setDate(d.getDate()+266-(+$('#age').value));const fd=x=>x.toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'}),e0=parse(v),srcTxt=m==='ivf'?'IVF, Day '+$('#age').value+' transfer on '+fd(e0):m==='lmp'?'Based on last period on '+fd(e0):'Due date entered';
     d=new Date(d.getFullYear(),d.getMonth(),d.getDate());
     const left=Math.round((d-today())/DAY);
     if(left<-14||left>290){$('#err').textContent='That date doesn’t look right. Check the date and try again.';return}
-    store.set('bloomdad-due',iso(d));due=d;view=null;main();
+    store.set('bloomdad-due',iso(d));store.set('bloomdad-src',srcTxt);due=d;view=null;main();
   };
 }
 
 function main(){
   const left=Math.round((due-today())/DAY),g=Math.max(0,280-left),wk=Math.min(40,Math.floor(g/7)),dd=g%7;
-  if(view===null)view=Math.max(4,wk);
+  if(view===null)view=Math.max(2,wk);
   const dueTxt=due.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric',year:'numeric'});
   const C=2*Math.PI*112;
-  app.innerHTML=`<div class="top"><div><h1>Hey, dad 💙</h1><p class="soft small" id="dueline"></p></div>
+  app.innerHTML=`<div class="top"><div><h1>Hey, dad 💙</h1><p class="soft small" id="dueline"></p><p class="soft small" id="srcline"></p></div>
   <button class="link" id="chg">Change date</button></div>
   <section class="hero"><div class="ringwrap">
   <svg width="250" height="250" viewBox="0 0 250 250" aria-hidden="true"><circle cx="125" cy="125" r="112" fill="none" stroke="var(--line)" stroke-width="12"/>
   <circle id="ring" cx="125" cy="125" r="112" fill="none" stroke="var(--rose)" stroke-width="12" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C}" style="transition:stroke-dashoffset .5s"/></svg>
-  <div class="nest"><div class="fruit" id="fruit"></div><div class="wk" id="wk"></div></div></div>
-  <p class="size" id="size" style="margin-top:12px"></p><span class="pill" id="pill"></span></section>
+  <div class="nest"><div class="baby" id="baby"></div><div class="wk" id="wk"></div></div></div>
+  <div class="sizerow"><div class="prod" id="prod"></div><p class="size" id="size"></p></div><span class="pill" id="pill"></span></section>
   <div id="next"></div>
   <div class="card"><div class="row"><h2>Browse the weeks</h2><button class="link" id="now">Back to today</button></div>
-  <input type="range" id="sl" min="4" max="40" step="1" aria-label="Pregnancy week">
+  <input type="range" id="sl" min="2" max="40" step="1" aria-label="Pregnancy week">
   <div class="tri" id="tri"><span></span><span></span><span></span></div>
   <div class="tl"><span>Trimester 1</span><span>Trimester 2</span><span>Trimester 3</span></div></div>
-  <div class="card"><h2>How big is baby?</h2><div class="stats"><div class="stat soft small">Length<b id="len"></b><span id="len2"></span></div><div class="stat soft small">Weight<b id="wgt"></b></div></div>
-  <div class="bar" aria-hidden="true"><i id="gb"></i></div><p class="soft small" style="margin-top:6px">Growth toward full-term length (about 51 cm)</p></div>
+  <div class="card"><h2>Milestones</h2><div class="mstrip" id="ms"></div></div>
+  <div class="card"><h2>How big is baby?</h2><div class="stats"><div class="stat soft small"><span id="llab">Length</span><b id="len"></b><span id="len2"></span></div><div class="stat soft small">Weight<b id="wgt"></b></div></div>
+  <div class="bar" aria-hidden="true"><i id="gb"></i></div><p class="soft small" style="margin-top:6px">Growth toward full-term weight (about 3.4 kg)</p></div>
   <div class="card"><h2>What’s happening</h2><p id="dev"></p></div>
   <div class="card mom"><h2>How you can help</h2><p id="mom"></p></div>
   <div class="card"><h2>Appointments</h2><div id="alist"></div>
@@ -167,22 +226,25 @@ function main(){
   <div class="two"><input type="date" id="ad" aria-label="Date"><input type="time" id="atm" aria-label="Time"></div>
   <button class="btn alt" id="aadd" style="width:100%;margin-top:10px">Add appointment</button>
   <p class="soft small" style="margin-top:8px">Reminders show here when you open Bloom. For phone alerts, also add visits to your calendar app.</p></div>
-  <div class="card"><div class="row"><div><h2>Kicks I’ve felt</h2><p class="soft small">Tap each time you feel baby move. Dads can often feel kicks from about week 24 to 28.</p></div>
+  <div class="card"><div class="row"><div><h2>Kicks I’ve felt</h2><p class="soft small">Just a fun keepsake. Dads can often feel kicks from about week 24 to 28. If she notices less movement, she should call her provider right away.</p></div>
   <button class="kick" id="kick" aria-label="Count a kick">🦶</button></div><p class="big" id="kc" style="font-size:26px;margin-top:8px"></p></div>
   <footer>Sizes are averages and every baby grows differently. Bloom Dad doesn’t replace her midwife or doctor. If something worries you, call them.</footer>`;
-  $('#dueline').textContent='Due '+dueTxt;
+  $('#dueline').textContent='Due '+dueTxt;$('#srcline').textContent=store.get('bloomdad-src')||'';
   const sl=$('#sl');sl.value=view;
+  const ms=$('#ms');MS.forEach(([w,t])=>{const b=document.createElement('button');b.className='ms';b.dataset.w=w;b.innerHTML='<i>'+w+'</i><span>'+t+'</span>';b.onclick=()=>{view=w;sl.value=w;upd()};ms.appendChild(b)});
   function upd(){
     const e=pick(view),cur=view===wk;
-    $('#fruit').textContent=e[1];
+    $('#baby').innerHTML=baby(view);$('#prod').innerHTML='<svg viewBox="0 0 64 64">'+P[e[0]]+'</svg>';
     $('#wk').textContent='Week '+view;
     $('#size').innerHTML='About the size of a <b>'+e[2]+'</b>';
-    $('#len').textContent=cm(e[3]);$('#len2').textContent=inch(e[3]);$('#wgt').textContent=wt(e[4]);
-    $('#gb').style.width=Math.max(2,e[3]/51*100)+'%';
+    $('#len').textContent=cm(e[3]);$('#llab').textContent=e[3]<0.1?'Length':view<20?'Length (head to rump)':'Length (head to heel)';$('#len2').textContent=inch(e[3]);$('#wgt').textContent=wt(e[4]);
+    $('#gb').style.width=Math.max(2,e[4]/3400*100)+'%';
     $('#dev').textContent=e[5];$('#mom').textContent=DT[D.indexOf(e)];
     const tri=view<14?1:view<28?2:3;
     document.querySelectorAll('#tri span').forEach((s,i)=>s.classList.toggle('on',i<tri));
     $('#ring').style.strokeDashoffset=C*(1-view/40);
+    const am=MS.filter(m=>m[0]<=view).pop();let onb=null;ms.querySelectorAll('.ms').forEach(b=>{const w=+b.dataset.w,on=am&&w===am[0];b.classList.toggle('done',w<=wk);b.classList.toggle('on',!!on);if(on)onb=b});
+    if(onb)ms.scrollTo({left:onb.offsetLeft-ms.clientWidth/2+onb.offsetWidth/2,behavior:'smooth'});
     $('#now').style.visibility=cur?'hidden':'visible';
     let t;
     if(cur){t=left>0?(left===1?'1 day to go':left+' days to go'):left===0?'Due today! 🎉':Math.abs(left)+' days past due. Any moment now 💛';}
@@ -190,8 +252,8 @@ function main(){
     $('#pill').textContent=t;
   }
   sl.oninput=()=>{view=+sl.value;upd()};
-  $('#now').onclick=()=>{view=Math.max(4,wk);sl.value=view;upd()};
-  $('#chg').onclick=()=>{setup()};
+  $('#now').onclick=()=>{view=Math.max(2,wk);sl.value=view;upd()};
+  $('#chg').onclick=()=>{setup('',true)};
   const kk='bloomdad-kicks-'+iso(today());kicks=+store.get(kk)||0;
   const kc=()=>$('#kc').textContent=kicks===0?'No kicks yet today':kicks+(kicks===1?' kick':' kicks')+' today';kc();
   $('#kick').onclick=()=>{kicks++;store.set(kk,kicks);kc()};
@@ -212,7 +274,7 @@ function main(){
   $('#aadd').onclick=()=>{const n=$('#at').value.trim(),d=$('#ad').value;if(!n){$('#at').focus();return}if(!d){$('#ad').focus();return}A.push({id:Date.now(),n:n.slice(0,60),d,t:$('#atm').value});save();$('#at').value='';$('#ad').value='';$('#atm').value='';rA()};
   rA();
   upd();
-  if(wk<4)$('#pill').textContent='Early days: baby’s journey begins at week 4';
+  if(wk<2)$('#pill').textContent='Very early days. Your journey begins here.';
 }
 
 const saved=store.get('bloomdad-due');

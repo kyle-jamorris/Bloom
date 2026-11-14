@@ -57,11 +57,45 @@ input[type=text],input[type=time]{width:100%;min-width:0;padding:13px;border-rad
 .chip{background:var(--glow);border:0;color:var(--ink);border-radius:99px;padding:7px 12px;font:600 13px Nunito,sans-serif;cursor:pointer}
 .nextb{border-radius:18px;padding:14px 16px;margin-bottom:14px;background:var(--card);border:2px solid var(--mint)}
 .nextb.soon{background:var(--butter);border-color:var(--butter);color:#4A3513}
+.hero{margin:4px 0 14px}
+.hrow{display:flex;justify-content:space-between;align-items:flex-end;gap:10px;margin-bottom:12px}
+.hrow .wk{font-size:36px;line-height:1;margin:0}.hrow .sub{margin-top:4px;font-size:14px}
+.hrow .pill{margin:0 0 4px;text-align:center}
+.stage{position:relative;height:224px;border-radius:30px;border:1px solid var(--line);background:radial-gradient(circle at 50% 46%,var(--glow),var(--card) 78%);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.ghost{position:absolute;width:192px;height:192px;border:2px dashed var(--line);border-radius:50%}
+.ghost::after{content:'full term';position:absolute;top:-1px;left:50%;transform:translate(-50%,-50%);background:var(--card);padding:0 6px;font:700 10px Nunito,sans-serif;color:var(--soft)}
+.prod{position:relative;transition:width .4s ease,height .4s ease;filter:drop-shadow(0 8px 10px rgba(0,0,0,.18))}
+.prod svg{width:100%;height:100%;display:block}
+.peek{position:absolute;left:10px;bottom:10px;width:84px;height:84px;border-radius:50%;border:3px solid var(--card);box-shadow:0 4px 12px rgba(0,0,0,.14)}
+.peek svg{width:100%;height:100%;border-radius:50%;animation:float 4s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-3px)}}
+@media(prefers-reduced-motion:reduce){.peek svg{animation:none}.prod{transition:none}}
+.hero .size{text-align:center;margin:14px 0 0;font-size:19px}.hero .meas{text-align:center;margin-top:2px}
+.jt{position:relative;height:50px;margin-top:8px}
+.trk{position:absolute;left:0;right:0;top:21px;height:8px;border-radius:8px;background:var(--line)}
+.trk i{position:absolute;left:0;top:0;height:100%;border-radius:8px;background:var(--mint);transition:width .25s}
+#dots{position:absolute;inset:0;pointer-events:none}
+#dots i{position:absolute;top:19px;width:12px;height:12px;margin-left:-6px;border-radius:50%;background:var(--card);border:2px solid var(--line);z-index:1}
+#dots i.on{background:var(--mint);border-color:var(--mint)}
+#dots i.cur{background:var(--rose);border-color:var(--rose);transform:scale(1.35)}
+.jt input{position:absolute;inset:0;width:100%;height:100%;margin:0;background:transparent;-webkit-appearance:none;appearance:none;z-index:2}
+.jt input::-webkit-slider-runnable-track{height:50px;background:transparent}
+.jt input::-moz-range-track{background:transparent}
+.jt input::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;margin-top:11px;border-radius:50%;background:var(--rose);border:4px solid var(--card);box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.jt input::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--rose);border:4px solid var(--card)}
+.tlab{position:relative;height:16px;font-size:11px;font-weight:700;color:var(--soft)}
+.tlab span{position:absolute;left:calc(14px + (100% - 28px) * var(--f));transform:translateX(-50%);white-space:nowrap}
+.mcap{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:22px;padding:10px 8px;margin-top:8px}
+.mtxt{flex:1;min-width:0;text-align:center}.mtxt small{display:block;color:var(--soft);font-weight:700;font-size:12px}
+.mtxt b{display:block;font:800 19px Fraunces,serif}.mtxt span{display:block;color:var(--soft);font-size:14px;line-height:1.35}
+.mb{flex:none;width:46px;height:46px;border-radius:50%;border:0;background:var(--glow);color:var(--ink);font-size:24px;cursor:pointer}.mb:disabled{opacity:.3}
 footer{font-size:12px;color:var(--soft);text-align:center;margin-top:18px}
 </style></head><body><main id="app"></main>
 <script>
 // [week, emoji, size comparison, length cm, weight g, development, note for mom]
 const D=[
+[2,'✨','pinpoint',0,0,'Baby is just a few cells, far too small to see. Around now the egg and sperm have met, or your embryo has just been transferred.','Nothing to feel yet. This is the waiting stretch, so be kind to yourself.'],
+[3,'✨','pinpoint',0,0,'The embryo is dividing and getting ready to settle into the lining of your uterus (implantation).','Some women notice light spotting or cramps, and many feel nothing. Your clinic will tell you when to test.'],
 [4,'⚫','poppy seed',0.1,0,'A tiny ball of cells is nestling into the lining of your uterus. Big things are starting!','You may feel nothing yet, or just a missed period. A test can confirm it.'],
 [5,'🌱','apple seed',0.3,0,'The heart tube is forming and will start to flutter soon. The brain and spine are beginning too.','Tender breasts, tiredness and a queasy tummy can show up.'],
 [6,'🫘','lentil',0.6,0,'A tiny heartbeat is flickering, and little buds that become arms and legs have appeared.','Nausea may be building. Small, frequent snacks can help.'],
@@ -74,29 +108,78 @@ const D=[
 [16,'🥑','avocado',11.6,100,'Baby’s ears are in place and may pick up your voice and heartbeat.','Soon you might feel first flutters, like bubbles or tiny taps.'],
 [18,'🫑','bell pepper',14.2,190,'Baby is yawning, hiccupping and stretching. Fingerprints are forming.','Your anatomy scan usually happens between weeks 18 and 22.'],
 [20,'🍌','banana',25,300,'Halfway there! Baby is swallowing, and a waxy coat called vernix protects the skin.','The bump is likely showing. A great time to start belly photos.'],
-[22,'🥭','mango',28,430,'Eyebrows and eyelids are in place, and baby is practising a grip.','Movements get stronger. Notice when baby is awake and asleep.'],
+[22,'🥭','mango',28,430,'Eyebrows and eyelids are in place, and baby is practicing a grip.','Movements get stronger. Notice when baby is awake and asleep.'],
 [24,'🌽','ear of corn',30,600,'The lungs are growing branches, and hearing is sharper. Loud noises may make baby jump.','A glucose screening is often done around now.'],
 [26,'🥕','large carrot',35,760,'Eyes begin to open, and baby responds to light and your voice.','Backaches and leg cramps are common. Stretch gently and drink water.'],
 [28,'🍆','eggplant',37,1000,'Baby can blink and dream while fat stores build under the skin.','Welcome to trimester three! Many moms start counting kicks now.'],
 [30,'🥬','cabbage',40,1300,'The brain is forming grooves and folds, and bones are hardening.','Heartburn and short breath are common. Prop yourself up with pillows.'],
-[32,'🎃','squash',42,1700,'Baby is practising breathing. Most turn head-down in the coming weeks.','Pack your hospital bag and sketch your birth preferences.'],
+[32,'🎃','squash',42,1700,'Baby is practicing breathing. Most turn head-down in the coming weeks.','Pack your hospital bag and sketch your birth preferences.'],
 [34,'🍈','cantaloupe',45,2100,'The lungs are maturing and baby gains about 200 g a week.','Practice contractions (Braxton Hicks) may appear. Call your provider if unsure.'],
 [36,'🍈','honeydew',47,2600,'Baby is dropping lower into your pelvis, getting ready.','Checkups become weekly. Rest up and install the car seat.'],
 [38,'🍉','mini watermelon',49,3100,'Baby is nearly ready. The organs are mature and the grip is strong.','Any day now. Keep your phone charged and your bag by the door.'],
 [40,'🍉','small watermelon',51,3400,'Full term! Baby is ready to meet you.','Due dates are estimates. Most babies arrive within two weeks either side.']];
+const lf=(x,y,r)=>`<ellipse cx="${x}" cy="${y}" rx="8" ry="4" fill="#4FA33A" transform="rotate(${r} ${x} ${y})"/>`;
+const P={
+2:`<circle cx="32" cy="32" r="4" fill="#E5628A"/><g fill="#FFB3CB"><circle cx="22" cy="24" r="2"/><circle cx="43" cy="26" r="2.5"/><circle cx="40" cy="42" r="2"/><circle cx="24" cy="40" r="1.6"/></g>`,
+4:`<ellipse cx="32" cy="33" rx="9" ry="8" fill="#3B3A5C"/><ellipse cx="29" cy="30" rx="3" ry="2" fill="#7A7AAA"/>`,
+5:`<path d="M32 12C43 27 46 40 32 52C18 40 21 27 32 12Z" fill="#7A4A2A"/><path d="M30 22C26 30 26 38 30 44" stroke="#A8693F" stroke-width="3" fill="none" stroke-linecap="round"/>`,
+6:`<ellipse cx="32" cy="32" rx="19" ry="12" fill="#C8884B"/><ellipse cx="32" cy="32" rx="12" ry="6" fill="#DDA56A"/>`,
+7:`<circle cx="32" cy="34" r="19" fill="#4A5BB5"/><path d="M32 22l4 5-4 3-4-3z" fill="#2B3A87"/><ellipse cx="25" cy="29" rx="4" ry="2.5" fill="#fff" opacity=".35"/>`,
+8:`<path d="M14 36C12 20 30 12 43 19C56 26 52 45 38 49C27 52 15 47 14 36Z" fill="#B03A48"/><ellipse cx="29" cy="26" rx="8" ry="3" fill="#fff" opacity=".3" transform="rotate(-20 29 26)"/>`,
+9:`<path d="M35 10v14" stroke="#6B4A2A" stroke-width="3" stroke-linecap="round"/>${lf(44,14,-20)}<g fill="#7B4FB5"><circle cx="21" cy="30" r="7.5"/><circle cx="35" cy="30" r="7.5"/><circle cx="49" cy="30" r="7.5"/><circle cx="28" cy="41" r="7.5"/><circle cx="42" cy="41" r="7.5"/><circle cx="35" cy="52" r="7.5"/></g><g fill="#fff" opacity=".35"><circle cx="19" cy="28" r="2"/><circle cx="33" cy="28" r="2"/><circle cx="47" cy="28" r="2"/><circle cx="26" cy="39" r="2"/><circle cx="40" cy="39" r="2"/></g>`,
+10:`<ellipse cx="32" cy="36" rx="19" ry="16" fill="#F59A1F"/><ellipse cx="25" cy="30" rx="6" ry="3" fill="#fff" opacity=".3"/><circle cx="32" cy="21" r="2.5" fill="#2F7D2A"/>${lf(41,17,-25)}`,
+12:`<circle cx="32" cy="34" r="19" fill="#8CC63F"/><circle cx="32" cy="34" r="13" fill="#B5DB5E" opacity=".5"/><ellipse cx="25" cy="27" rx="5" ry="2.5" fill="#fff" opacity=".35"/><circle cx="32" cy="14" r="2.5" fill="#2F7D2A"/>${lf(41,13,-20)}`,
+14:`<path d="M9 33Q13 18 32 17Q51 18 55 33Q51 48 32 49Q13 48 9 33Z" fill="#FFD43B"/><path d="M6 33l6-3v6zM58 33l-6-3v6z" fill="#FFD43B"/><ellipse cx="26" cy="27" rx="7" ry="2.5" fill="#fff" opacity=".4"/><rect x="30" y="11" width="3" height="7" fill="#2F7D2A"/>${lf(41,12,-20)}`,
+16:`<path d="M32 6C41 6 42 20 48 30C55 41 48 58 32 58C16 58 9 41 16 30C22 20 23 6 32 6Z" fill="#3F6B2A"/><path d="M32 12C38 12 38 23 43 31C48 40 43 53 32 53C21 53 16 40 21 31C26 23 26 12 32 12Z" fill="#DDE98A"/><circle cx="32" cy="40" r="9" fill="#7A4A2A"/><ellipse cx="29" cy="37" rx="3" ry="2" fill="#fff" opacity=".25"/>`,
+18:`<path d="M18 22C9 27 9 46 20 53C27 57 37 57 44 53C55 46 55 27 46 22C40 18 24 18 18 22Z" fill="#E23C3C"/><path d="M32 20C26 30 26 46 32 56M24 22C19 32 20 46 25 54M40 22C45 32 44 46 39 54" stroke="#B82828" stroke-width="2" fill="none" opacity=".6"/><rect x="29" y="8" width="7" height="12" rx="2" fill="#3C8D2F"/>`,
+20:`<path d="M13 12Q7 46 33 55Q49 58 57 46Q43 51 31 43Q21 35 24 12Z" fill="#FFD43B"/><path d="M17 20Q15 42 33 51" stroke="#fff" stroke-width="2" opacity=".4" fill="none"/><rect x="14" y="6" width="9" height="8" rx="2" fill="#7A5A2A"/>`,
+22:`<g transform="rotate(25 32 36)"><ellipse cx="32" cy="36" rx="17" ry="22" fill="#FFB02E"/><ellipse cx="38" cy="32" rx="9" ry="15" fill="#FF6B3D" opacity=".5"/></g><rect x="30" y="7" width="3" height="8" fill="#6B4A2A"/>${lf(42,11,-30)}`,
+24:`<ellipse cx="32" cy="30" rx="10" ry="23" fill="#FFD43B"/><g stroke="#E5B019" stroke-width="1.5"><path d="M32 8v44M26 10v40M38 10v40M22 20h20M22 30h20M22 40h20"/></g><path d="M32 57C17 53 13 36 21 26C23 40 27 49 32 57Z" fill="#6BB04A"/><path d="M32 57C47 53 51 36 43 26C41 40 37 49 32 57Z" fill="#5BA043"/>`,
+26:`<g fill="#4FA33A"><ellipse cx="26" cy="12" rx="3" ry="8" transform="rotate(-20 26 12)"/><ellipse cx="32" cy="9" rx="3" ry="9"/><ellipse cx="38" cy="12" rx="3" ry="8" transform="rotate(20 38 12)"/></g><path d="M22 18Q32 12 42 18L35 58Q32 61 29 58Z" fill="#FF8A2E"/><path d="M25 28h8M31 38h7M29 47h5" stroke="#D96A12" stroke-width="2" stroke-linecap="round"/>`,
+28:`<path d="M30 22C13 26 9 46 21 54C33 61 51 50 48 34C47 28 42 22 36 20Z" fill="#6B3FA0"/><ellipse cx="24" cy="38" rx="4" ry="9" fill="#fff" opacity=".25" transform="rotate(20 24 38)"/><path d="M24 20L32 14L40 20L36 27L28 27Z" fill="#3C8D2F"/><rect x="30" y="7" width="4" height="8" rx="2" fill="#3C8D2F"/>`,
+30:`<circle cx="32" cy="34" r="22" fill="#8FCB6A"/><path d="M32 12C18 22 18 46 32 56M32 12C46 22 46 46 32 56M12 34C22 30 42 30 52 34" stroke="#5BA043" stroke-width="2.5" fill="none"/><path d="M32 12v44" stroke="#CDE8A5" stroke-width="3"/>`,
+32:`<path d="M26 10h12C40 24 42 28 48 36C55 47 47 58 32 58C17 58 9 47 16 36C22 28 24 24 26 10Z" fill="#F2B15A"/><path d="M30 12C30 28 24 36 22 44" stroke="#D9923A" stroke-width="2" fill="none" opacity=".6"/><rect x="28" y="5" width="8" height="8" rx="2" fill="#7A5A2A"/>`,
+34:`<circle cx="32" cy="34" r="22" fill="#F5C07A"/><g stroke="#D9A05B" stroke-width="2" fill="none" opacity=".8"><path d="M12 28Q32 40 52 28M12 40Q32 52 52 40M22 14Q14 34 22 54M32 12v44M42 14Q50 34 42 54"/></g><rect x="30" y="8" width="4" height="6" rx="2" fill="#6B8F3A"/>`,
+36:`<circle cx="32" cy="34" r="22" fill="#CDE8A5"/><ellipse cx="24" cy="26" rx="8" ry="4" fill="#fff" opacity=".45" transform="rotate(-30 24 26)"/><circle cx="32" cy="12" r="3" fill="#6B8F3A"/>`,
+38:`<g transform="translate(32 34) scale(.85) translate(-32 -34)"><ellipse cx="32" cy="34" rx="25" ry="20" fill="#3FA34D"/><g stroke="#2B7A37" stroke-width="3" fill="none" stroke-linecap="round"><path d="M32 14C26 24 26 44 32 54M20 17C13 28 15 42 22 51M44 17C51 28 49 42 42 51"/></g><ellipse cx="22" cy="24" rx="6" ry="3" fill="#fff" opacity=".25"/></g>`,
+40:`<g transform="translate(0 -9)"><path d="M6 30A26 26 0 0 0 58 30Z" fill="#3FA34D"/><path d="M10 30A22 22 0 0 0 54 30Z" fill="#F8E7E7"/><path d="M13 30A19 19 0 0 0 51 30Z" fill="#FF5A6E"/><g fill="#2B2B3A"><ellipse cx="24" cy="38" rx="1.6" ry="2.6"/><ellipse cx="32" cy="43" rx="1.6" ry="2.6"/><ellipse cx="40" cy="38" rx="1.6" ry="2.6"/><ellipse cx="32" cy="35" rx="1.6" ry="2.6"/></g></g>`};
+P[3]=P[2];
+Object.assign(P,{"4": "<g fill=\"#3B3A5C\"><ellipse cx=\"22\" cy=\"30\" rx=\"8\" ry=\"6\" transform=\"rotate(-25 22 30)\"/><ellipse cx=\"40\" cy=\"26\" rx=\"8\" ry=\"6\" transform=\"rotate(15 40 26)\"/><ellipse cx=\"32\" cy=\"42\" rx=\"8\" ry=\"6\" transform=\"rotate(-5 32 42)\"/></g><g fill=\"#8A8ABB\" opacity=\".7\"><ellipse cx=\"19\" cy=\"28\" rx=\"2.5\" ry=\"1.5\"/><ellipse cx=\"37\" cy=\"24\" rx=\"2.5\" ry=\"1.5\"/><ellipse cx=\"29\" cy=\"40\" rx=\"2.5\" ry=\"1.5\"/></g>", "6": "<ellipse cx=\"25\" cy=\"34\" rx=\"15\" ry=\"11\" fill=\"#C9792E\" transform=\"rotate(-15 25 34)\"/><ellipse cx=\"40\" cy=\"32\" rx=\"15\" ry=\"11\" fill=\"#E08F3C\" transform=\"rotate(10 40 32)\"/><ellipse cx=\"36\" cy=\"29\" rx=\"8\" ry=\"3.5\" fill=\"#fff\" opacity=\".3\" transform=\"rotate(10 36 29)\"/>", "8": "<path d=\"M16 22C28 10 52 14 54 30C55 40 44 44 38 36C34 31 28 33 28 40C28 48 20 54 14 46C8 38 8 28 16 22Z\" fill=\"#A32D3F\"/><ellipse cx=\"38\" cy=\"22\" rx=\"9\" ry=\"3\" fill=\"#fff\" opacity=\".3\" transform=\"rotate(-10 38 22)\"/><ellipse cx=\"22\" cy=\"44\" rx=\"3\" ry=\"2\" fill=\"#7A1F2D\" transform=\"rotate(30 22 44)\"/>", "24": "<ellipse cx=\"32\" cy=\"30\" rx=\"12\" ry=\"24\" fill=\"#FFD43B\"/><g stroke=\"#E5B019\" stroke-width=\"1.5\"><path d=\"M32 7v46M25 9v42M39 9v42M21 20h22M21 30h22M21 40h22\"/></g><path d=\"M32 57C15 53 11 36 20 25C22 40 27 49 32 57Z\" fill=\"#6BB04A\"/><path d=\"M32 57C49 53 53 36 44 25C42 40 37 49 32 57Z\" fill=\"#5BA043\"/>"});
+const sk='#FFC7AE',sd='#F6A98E',ey='#6B4A58',hr='#C98B6B';
+function baby(w){
+  const b=w<4?0:w<7?1:w<12?2:w<20?3:w<30?4:5;
+  let s='<svg viewBox="0 0 120 120"><defs><radialGradient id="bgr" cx=".4" cy=".35" r=".8"><stop offset="0" stop-color="#fff" stop-opacity=".9"/><stop offset="1" style="stop-color:var(--glow)"/></radialGradient></defs><circle cx="60" cy="60" r="57" fill="url(#bgr)"/><g fill="#fff" opacity=".6"><circle cx="22" cy="88" r="3"/><circle cx="98" cy="28" r="2.5"/><circle cx="100" cy="86" r="4"/></g>';
+  if(!b)return s+`<g fill="#FFD3C0" stroke="${sd}" stroke-width="1.5"><circle cx="52" cy="54" r="12"/><circle cx="71" cy="52" r="12"/><circle cx="60" cy="68" r="12"/><circle cx="77" cy="68" r="10"/><circle cx="45" cy="70" r="10"/></g><g fill="#fff" opacity=".6"><circle cx="48" cy="50" r="3"/><circle cx="67" cy="48" r="3"/><circle cx="56" cy="64" r="3"/></g></svg>`;
+  if(b<3){
+    const t=b===1?22:28,hd=b===1?17:22;
+    s+=`<path d="M72 30C46 28 34 58 46 80C56 98 84 94 86 74" stroke="${sk}" stroke-width="${t}" fill="none" stroke-linecap="round"/><circle cx="70" cy="36" r="${hd}" fill="${sk}"/><path d="M68 32C50 32 42 56 50 74" stroke="#fff" stroke-opacity=".35" stroke-width="5" fill="none" stroke-linecap="round"/>`;
+    if(b===1)s+=`<path d="M84 62Q90 60 92 58" stroke="#FFE2A0" stroke-width="3" fill="none"/><circle cx="97" cy="54" r="10" fill="#FFE9B0"/><circle cx="94" cy="51" r="3" fill="#fff" opacity=".7"/>`;
+    if(b===1&&w>=6)s+=`<circle cx="58" cy="64" r="4" fill="#FF6F91"><animate attributeName="r" values="3;5;3" dur="1s" repeatCount="indefinite"/></circle>`;
+    if(b===2)s+=`<circle cx="50" cy="62" r="6" fill="${sd}"/><circle cx="64" cy="95" r="6.5" fill="${sd}"/><path d="M62 38q4 4 9 0" stroke="${ey}" stroke-width="2.2" fill="none" stroke-linecap="round"/><circle cx="60" cy="46" r="3.5" fill="#FF9DB5" opacity=".6"/>`;
+    return s+'</svg>';
+  }
+  const k=b===3?.88:b===4?1:1.1;
+  s+=`<g transform="translate(60 64) scale(${k}) translate(-60 -64)"><path d="M82 78Q102 76 98 98" stroke="#FFB8CB" stroke-width="4" fill="none" stroke-linecap="round"/><ellipse cx="70" cy="80" rx="25" ry="28" transform="rotate(-20 70 80)" fill="${sk}"/><ellipse cx="78" cy="100" rx="17" ry="11" transform="rotate(-10 78 100)" fill="${sd}"/><ellipse cx="88" cy="104" rx="9" ry="6" fill="${sk}"/><circle cx="46" cy="48" r="25" fill="${sk}"/><ellipse cx="55" cy="74" rx="11" ry="8" transform="rotate(-25 55 74)" fill="${sd}"/><circle cx="46" cy="68" r="6.5" fill="${sk}"/><path d="M33 50q4 4 8 0M51 50q4 4 8 0" stroke="${ey}" stroke-width="2.2" fill="none" stroke-linecap="round"/><circle cx="32" cy="58" r="4.5" fill="#FF9DB5" opacity=".6"/><circle cx="60" cy="58" r="4.5" fill="#FF9DB5" opacity=".6"/>`;
+  if(b>3)s+=`<circle cx="46" cy="56" r="1.8" fill="${sd}"/><path d="M42 62q4 3 8 0" stroke="${ey}" stroke-width="2" fill="none" stroke-linecap="round"/>`;
+  if(b>4)s+=`<path d="M38 26q8-9 16 0" stroke="${hr}" stroke-width="3.5" fill="none" stroke-linecap="round"/>`;
+  return s+'</g></svg>';
+}
+
+const VB={2:'16 14 32 32',3:'16 14 32 32',4:'10 16 42 36',5:'18 8 28 48',6:'8 16 50 32',7:'10 12 44 44',8:'6 8 52 50',9:'8 6 52 56',10:'10 12 46 42',12:'10 10 46 48',14:'4 8 56 44',16:'6 4 52 56'};
+const MS=[[3,'Implantation','The embryo settles into the lining of the uterus.'],[6,'Heartbeat','A tiny heart begins to flicker.'],[8,'Fingers and toes','Little hands and feet start to form.'],[10,'Organs in place','All the vital organs have formed.'],[12,'Makes a fist','Reflexes arrive and fingers curl.'],[16,'Hears your voice','Ears are in place and picking up sound.'],[18,'Yawns and hiccups','Baby is stretching and practicing.'],[20,'Halfway!','Swallowing begins and a waxy coat protects the skin.'],[24,'Lungs branching','Hearing sharpens. Baby may jump at loud noises.'],[26,'Eyes opening','Baby responds to light and your voice.'],[28,'Blinks and dreams','Fat stores build up under the skin.'],[32,'Practices breathing','Most babies turn head-down soon.'],[36,'Dropping low','Baby settles into the pelvis.'],[40,'Meet baby','Full term. Ready to meet you!']];
 const DAY=864e5,$=s=>document.querySelector(s),app=$('#app');
 const today=()=>{const n=new Date();return new Date(n.getFullYear(),n.getMonth(),n.getDate())};
 const parse=s=>{const[a,b,c]=s.split('-').map(Number);return new Date(a,b-1,c)};
 const iso=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
 const pick=w=>{let r=D[0];for(const e of D)if(e[0]<=w)r=e;return r};
-const cm=v=>v<10?v.toFixed(1)+' cm':Math.round(v)+' cm';
-const inch=v=>(v/2.54).toFixed(1)+' in';
+const cm=v=>v<0.1?'microscopic':v<10?v.toFixed(1)+' cm':Math.round(v)+' cm';
+const inch=v=>v<0.1?'':(v/2.54).toFixed(1)+' in';
 const wt=g=>g<1?'under 1 g':g>=1000?(g/1000).toFixed(1)+' kg ('+(g/453.6).toFixed(1)+' lb)':g+' g ('+(g/28.35).toFixed(1)+' oz)';
 let due=null,view=0,kicks=0;
 
-function setup(msg){
-  app.innerHTML=`<div class="intro"><span class="fruit">🌸</span><h1>Congratulations, mama</h1>
+function setup(msg,canCancel){
+  app.innerHTML=`<div class="intro"><span class="fruit">🌸</span><h1>${canCancel?'Update your date':'Congratulations, mama'}</h1>
   <p class="soft" style="margin-top:8px">Let’s follow your baby, week by week.</p></div>
   <div class="card" style="margin-top:22px">
   <label for="mode" style="margin-top:0">I know my…</label>
@@ -104,38 +187,39 @@ function setup(msg){
   <div id="agebox" style="display:none"><label for="age">Embryo age at transfer</label><select id="age"><option value="5">Day 5 (blastocyst)</option><option value="3">Day 3</option><option value="6">Day 6</option></select></div>
   <label for="dt" id="dtl">Due date</label><input type="date" id="dt">
   <p class="err" id="err">${msg||''}</p>
-  <button class="btn" id="go" style="width:100%;margin-top:6px">Start my journey</button></div>
+  <button class="btn" id="go" style="width:100%;margin-top:6px">${canCancel?'Save date':'Start my journey'}</button>${canCancel?'<button class="link" id="cancel" style="display:block;margin:12px auto 0">Cancel</button>':''}</div>
   <footer>Your date stays on this device only.</footer>`;
+  if(canCancel){$('#dt').value=iso(due);$('#cancel').onclick=()=>main()}
   $('#mode').onchange=()=>{const m=$('#mode').value;$('#agebox').style.display=m==='ivf'?'block':'none';$('#dtl').textContent=m==='ivf'?'Transfer date':m==='lmp'?'First day of last period':'Due date'};
   $('#go').onclick=()=>{
     const v=$('#dt').value;if(!v){$('#err').textContent='Pick a date to continue.';return}
-    let d=parse(v);const m=$('#mode').value;if(m==='lmp')d.setDate(d.getDate()+280);if(m==='ivf')d.setDate(d.getDate()+266-(+$('#age').value));
+    let d=parse(v);const m=$('#mode').value;if(m==='lmp')d.setDate(d.getDate()+280);if(m==='ivf')d.setDate(d.getDate()+266-(+$('#age').value));const fd=x=>x.toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'}),e0=parse(v),srcTxt=m==='ivf'?'IVF, Day '+$('#age').value+' transfer on '+fd(e0):m==='lmp'?'Based on last period on '+fd(e0):'Due date entered';
     d=new Date(d.getFullYear(),d.getMonth(),d.getDate());
     const left=Math.round((d-today())/DAY);
     if(left<-14||left>290){$('#err').textContent='That date doesn’t look right. Check the date and try again.';return}
-    store.set('bloom-due',iso(d));due=d;view=null;main();
+    store.set('bloom-due',iso(d));store.set('bloom-src',srcTxt);due=d;view=null;main();
   };
 }
 
 function main(){
   const left=Math.round((due-today())/DAY),g=Math.max(0,280-left),wk=Math.min(40,Math.floor(g/7)),dd=g%7;
-  if(view===null)view=Math.max(4,wk);
+  if(view===null)view=Math.max(2,wk);
   const dueTxt=due.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric',year:'numeric'});
   const C=2*Math.PI*112;
-  app.innerHTML=`<div class="top"><div><h1>Hello, mama 💗</h1><p class="soft small" id="dueline"></p></div>
+  app.innerHTML=`<div class="top"><div><h1>Hello, mama 💗</h1><p class="soft small" id="dueline"></p><p class="soft small" id="srcline"></p></div>
   <button class="link" id="chg">Change date</button></div>
-  <section class="hero"><div class="ringwrap">
-  <svg width="250" height="250" viewBox="0 0 250 250" aria-hidden="true"><circle cx="125" cy="125" r="112" fill="none" stroke="var(--line)" stroke-width="12"/>
-  <circle id="ring" cx="125" cy="125" r="112" fill="none" stroke="var(--rose)" stroke-width="12" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C}" style="transition:stroke-dashoffset .5s"/></svg>
-  <div class="nest"><div class="fruit" id="fruit"></div><div class="wk" id="wk"></div></div></div>
-  <p class="size" id="size" style="margin-top:12px"></p><span class="pill" id="pill"></span></section>
-  <div id="next"></div>
-  <div class="card"><div class="row"><h2>Browse the weeks</h2><button class="link" id="now">Back to today</button></div>
-  <input type="range" id="sl" min="4" max="40" step="1" aria-label="Pregnancy week">
-  <div class="tri" id="tri"><span></span><span></span><span></span></div>
-  <div class="tl"><span>Trimester 1</span><span>Trimester 2</span><span>Trimester 3</span></div></div>
-  <div class="card"><h2>How big is baby?</h2><div class="stats"><div class="stat soft small">Length<b id="len"></b><span id="len2"></span></div><div class="stat soft small">Weight<b id="wgt"></b></div></div>
-  <div class="bar" aria-hidden="true"><i id="gb"></i></div><p class="soft small" style="margin-top:6px">Growth toward full-term length (about 51 cm)</p></div>
+  <section class="hero">
+  <div class="hrow"><div><div class="wk" id="wk"></div><div class="sub" id="sub"></div></div><span class="pill" id="pill"></span></div>
+  <div class="stage"><div class="ghost"></div><div class="prod" id="prod"></div><div class="peek" id="baby"></div></div>
+  <p class="size" id="size"></p><p class="small soft meas" id="meas"></p>
+  <div class="jt"><div class="trk"><i id="jf"></i></div><div id="dots"></div><input type="range" id="sl" min="2" max="40" step="1" aria-label="Pregnancy week"></div>
+  <div class="tlab"><span style="--f:.16">Trimester 1</span><span style="--f:.5">Trimester 2</span><span style="--f:.84">Trimester 3</span></div>
+  <div class="mcap"><button class="mb" id="mprev" aria-label="Previous milestone">‹</button><div class="mtxt"><small id="mw"></small><b id="mt"></b><span id="md"></span></div><button class="mb" id="mnext" aria-label="Next milestone">›</button></div>
+  <div style="text-align:center"><button class="link" id="now">Back to today</button></div>
+</section>
+<div id="next"></div>
+  <div class="card"><h2>How big is baby?</h2><div class="stats"><div class="stat soft small"><span id="llab">Length</span><b id="len"></b><span id="len2"></span></div><div class="stat soft small">Weight<b id="wgt"></b></div></div>
+  <div class="bar" aria-hidden="true"><i id="gb"></i></div><p class="soft small" style="margin-top:6px">Growth toward full-term weight (about 3.4 kg)</p></div>
   <div class="card"><h2>What’s happening</h2><p id="dev"></p></div>
   <div class="card mom"><h2>For you, mama</h2><p id="mom"></p></div>
   <div class="card"><h2>Appointments</h2><div id="alist"></div>
@@ -144,22 +228,36 @@ function main(){
   <div class="two"><input type="date" id="ad" aria-label="Date"><input type="time" id="atm" aria-label="Time"></div>
   <button class="btn alt" id="aadd" style="width:100%;margin-top:10px">Add appointment</button>
   <p class="soft small" style="margin-top:8px">Reminders show here when you open Bloom. For phone alerts, also add visits to your calendar app.</p></div>
-  <div class="card"><div class="row"><div><h2>Kick counter</h2><p class="soft small">Tap for each movement you feel today.</p></div>
-  <button class="kick" id="kick" aria-label="Count a kick">🦶</button></div><p class="big" id="kc" style="font-size:26px;margin-top:8px"></p></div>
+  <div class="card" id="kcard"><div class="row"><div><h2>Kick counter</h2><p class="soft small">Count until you feel 10 movements. If it takes over 2 hours, or movement slows or changes, call your provider right away.</p></div>
+  <button class="kick" id="kick" aria-label="Count a kick">🦶</button></div><p class="big" id="kc" style="font-size:26px;margin-top:8px"></p><p class="soft small" id="kn" style="margin-top:6px"></p><button class="link" id="kreset">Start over</button></div>
   <footer>Sizes are averages and every baby grows differently. Bloom doesn’t replace your midwife or doctor, so call them with any worry.</footer>`;
-  $('#dueline').textContent='Due '+dueTxt;
+  $('#dueline').textContent='Due '+dueTxt;$('#srcline').textContent=store.get('bloom-src')||'';
   const sl=$('#sl');sl.value=view;
+  let pt=null,nt=null;
+  MS.forEach(([w])=>{const d=document.createElement('i');d.dataset.w=w;d.style.left='calc(14px + (100% - 28px) * '+((w-2)/38)+')';$('#dots').appendChild(d)});
+  $('#mprev').onclick=()=>{if(pt!=null){view=pt;sl.value=view;upd()}};
+  $('#mnext').onclick=()=>{if(nt!=null){view=nt;sl.value=view;upd()}};
   function upd(){
-    const e=pick(view),cur=view===wk;
-    $('#fruit').textContent=e[1];
+    const e=pick(view),cur=view===wk,f=(view-2)/38,tri=view<14?1:view<28?2:3;
+    const px=Math.round(40+138*Math.cbrt(Math.max(e[4],.3)/3400)),pr=$('#prod');
+    pr.style.width=pr.style.height=px+'px';
+    pr.innerHTML='<svg viewBox="'+(VB[e[0]]||'0 0 64 64')+'">'+P[e[0]]+'</svg>';
+    $('#baby').innerHTML=baby(view);
     $('#wk').textContent='Week '+view;
+    $('#sub').textContent=(cur?wk+' weeks, '+dd+(dd===1?' day':' days')+' · ':'')+'Trimester '+tri;
     $('#size').innerHTML='About the size of a <b>'+e[2]+'</b>';
-    $('#len').textContent=cm(e[3]);$('#len2').textContent=inch(e[3]);$('#wgt').textContent=wt(e[4]);
-    $('#gb').style.width=Math.max(2,e[3]/51*100)+'%';
+    $('#meas').textContent=(e[3]<0.1?'Microscopic':cm(e[3])+' ('+inch(e[3])+')')+' · '+wt(e[4]);
+    $('#len').textContent=cm(e[3]);$('#llab').textContent=e[3]<0.1?'Length':view<20?'Length (head to rump)':'Length (head to heel)';$('#len2').textContent=inch(e[3]);$('#wgt').textContent=wt(e[4]);
+    $('#gb').style.width=Math.max(2,e[4]/3400*100)+'%';
     $('#dev').textContent=e[5];$('#mom').textContent=e[6];
-    const tri=view<14?1:view<28?2:3;
-    document.querySelectorAll('#tri span').forEach((s,i)=>s.classList.toggle('on',i<tri));
-    $('#ring').style.strokeDashoffset=C*(1-view/40);
+    $('#jf').style.width='calc(14px + (100% - 28px) * '+f+')';
+    const am=MS.filter(m=>m[0]<=view).pop()||MS[0],ix=MS.indexOf(am),ahead=view<MS[0][0];
+    document.querySelectorAll('#dots i').forEach(d=>{const w=+d.dataset.w;d.classList.toggle('on',w<=view);d.classList.toggle('cur',w===am[0]&&!ahead)});
+    $('#mw').textContent=(ahead||am[0]>wk?'Coming up':'Reached')+' · Week '+am[0];
+    $('#mt').textContent=am[1];$('#md').textContent=am[2];
+    pt=ahead?null:view>am[0]?am[0]:ix>0?MS[ix-1][0]:null;
+    nt=ahead?MS[0][0]:ix<MS.length-1?MS[ix+1][0]:null;
+    $('#mprev').disabled=pt==null;$('#mnext').disabled=nt==null;
     $('#now').style.visibility=cur?'hidden':'visible';
     let t;
     if(cur){t=left>0?(left===1?'1 day to go':left+' days to go'):left===0?'Due today! 🎉':Math.abs(left)+' days past due. Any moment now 💛';}
@@ -167,11 +265,18 @@ function main(){
     $('#pill').textContent=t;
   }
   sl.oninput=()=>{view=+sl.value;upd()};
-  $('#now').onclick=()=>{view=Math.max(4,wk);sl.value=view;upd()};
-  $('#chg').onclick=()=>{setup()};
-  const kk='bloom-kicks-'+iso(today());kicks=+store.get(kk)||0;
-  const kc=()=>$('#kc').textContent=kicks===0?'No kicks yet today':kicks+(kicks===1?' kick':' kicks')+' today';kc();
-  $('#kick').onclick=()=>{kicks++;store.set(kk,kicks);kc()};
+  $('#now').onclick=()=>{view=Math.max(2,wk);sl.value=view;upd()};
+  $('#chg').onclick=()=>{setup('',true)};
+  if(wk<26)$('#kcard').style.display='none';
+  let ks=0,ke=0,kn=0,iv=null;
+  const mm=t=>{const s=Math.floor(t/1000);return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')};
+  const kr=()=>{const el=(ke||Date.now())-ks;
+    if(!ks){$('#kc').textContent='Tap at your first movement';$('#kn').textContent=''}
+    else if(kn>=10){$('#kc').textContent='10 movements in '+mm(el);$('#kn').textContent=el>72e5?'That took over 2 hours. Call your provider right away.':'Done. Every baby has a pattern, so call your provider if it changes.'}
+    else{$('#kc').textContent=kn+' of 10 · '+mm(el);$('#kn').textContent=el>72e5?'Over 2 hours with fewer than 10 movements. Call your provider right away.':''}};
+  
+  $('#kick').onclick=()=>{if(kn>=10)return;if(!ks){ks=Date.now();iv=setInterval(kr,1000)}kn++;if(kn>=10){ke=Date.now();clearInterval(iv)}kr()};
+  $('#kreset').onclick=()=>{clearInterval(iv);ks=ke=kn=0;kr()};kr();
   let A=[];try{A=JSON.parse(store.get('bloom-appts')||'[]')}catch(e){}
   const save=()=>store.set('bloom-appts',JSON.stringify(A));
   const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -189,7 +294,7 @@ function main(){
   $('#aadd').onclick=()=>{const n=$('#at').value.trim(),d=$('#ad').value;if(!n){$('#at').focus();return}if(!d){$('#ad').focus();return}A.push({id:Date.now(),n:n.slice(0,60),d,t:$('#atm').value});save();$('#at').value='';$('#ad').value='';$('#atm').value='';rA()};
   rA();
   upd();
-  if(wk<4)$('#pill').textContent='Early days: baby’s journey begins at week 4';
+  if(wk<2)$('#pill').textContent='Very early days. Your journey begins here.';
 }
 
 const saved=store.get('bloom-due');

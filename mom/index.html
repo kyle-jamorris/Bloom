@@ -103,6 +103,12 @@ main{padding-bottom:132px}
 .tabs .ic{display:block;width:64px;height:64px;border-radius:50%;background:var(--card);border:4px solid var(--card);box-shadow:0 4px 14px rgba(60,40,90,.24);overflow:hidden}
 .tabs .home.on .ic{border-color:var(--rose)}
 .tabs .ic svg{width:100%;height:100%;display:block}
+.mlink{display:inline-flex;align-items:center;min-height:40px;margin:2px 14px 0 0;font-weight:800;font-size:14px;color:var(--rose);text-decoration:underline}
+.nextb .mlink{color:inherit}
+.ai>div:first-child{flex:1;min-width:0;overflow-wrap:anywhere}
+input[type=tel]{display:block;width:100%;max-width:100%;min-width:0;min-height:50px;-webkit-appearance:none;appearance:none;padding:0 14px;border-radius:14px;border:2px solid var(--line);background:var(--card);color:var(--ink);font:600 16px ui-rounded,system-ui,sans-serif}
+.add{margin-top:12px;border-top:1px dashed var(--line);padding-top:6px}
+.add summary{font-weight:800;color:var(--rose);cursor:pointer;min-height:44px;display:flex;align-items:center}
 footer{font-size:12px;color:var(--soft);text-align:center;margin-top:18px}
 </style></head><body><main id="app"></main>
 <script>
@@ -218,10 +224,25 @@ function main(){
   <label class="fl" for="at">What</label><input type="text" id="at" placeholder="Appointment (e.g. OB checkup)">
   <label class="fl" for="ad">Date</label><input type="date" id="ad">
   <label class="fl" for="atm">Time (optional)</label><input type="time" id="atm">
+  <label class="fl" for="ap">Provider (optional)</label><select id="ap"></select>
+  <label class="fl" for="ac">Clinic (optional)</label><select id="ac"></select><p class="hint2" id="ahint"></p>
   <div class="arow"><button class="btn alt" id="aadd">Add appointment</button><button class="link" id="acancel" style="display:none">Cancel</button></div>
   <p class="soft small" style="margin-top:8px">Reminders show here when you open Bloom. For phone alerts, also add visits to your calendar app.</p></div>
   </div><div class="pg" id="pg-m"><h1 class="gr">More</h1>
   <div class="card"><h2>Your due date</h2><p class="soft" id="dueline"></p><p class="soft small" id="srcline"></p><button class="btn alt" id="chg" style="width:100%;margin-top:12px">Change date</button></div>
+  <div class="card"><h2>Care team</h2><p class="soft small" id="tsug"></p><div id="plist"></div>
+  <details class="add" id="pdet"><summary>Add a provider</summary>
+  <div class="chips" id="rchips"></div>
+  <label class="fl" for="pr">Role</label><select id="pr"></select>
+  <label class="fl" for="pn">Name</label><input type="text" id="pn" placeholder="e.g. Dr. Rivera">
+  <label class="fl" for="pph">Phone (optional)</label><input type="tel" id="pph" placeholder="(555) 555-5555">
+  <label class="fl" for="pc">Clinic (optional)</label><select id="pc"></select>
+  <div class="arow"><button class="btn alt" id="padd">Add provider</button><button class="link" id="pcancel" style="display:none">Cancel</button></div></details></div>
+  <div class="card"><h2>Clinics</h2><div id="clist"></div>
+  <details class="add" id="cdet"><summary>Add a clinic</summary>
+  <label class="fl" for="cn">Clinic name</label><input type="text" id="cn" placeholder="e.g. Valley Women’s Health">
+  <label class="fl" for="ca">Address</label><input type="text" id="ca" placeholder="Street, city, state">
+  <div class="arow"><button class="btn alt" id="cadd">Add clinic</button><button class="link" id="ccancel" style="display:none">Cancel</button></div></details></div>
   <div class="card" id="kcard"><div class="row"><div><h2>Kick counter</h2><p class="soft small">Count until you feel 10 movements. If it takes over 2 hours, or movement slows or changes, call your provider right away.</p></div>
   <button class="kick" id="kick" aria-label="Count a kick">🦶</button></div><p class="big" id="kc" style="font-size:26px;margin-top:8px"></p><p class="soft small" id="kn" style="margin-top:6px"></p><button class="link" id="kreset">Start over</button></div>
   <footer>Sizes are averages and every baby grows differently. Bloom doesn’t replace your midwife or doctor, so call them with any worry.</footer></div><nav class="tabs" aria-label="Main"><button data-t="a" aria-label="Appointments"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/></svg><span>Appointments</span></button><button class="home on" data-t="j" aria-label="Journey" aria-current="page"><i class="ic" id="ticon"></i><span>Journey</span></button><button data-t="m" aria-label="More"><svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true"><circle cx="5.5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="18.5" cy="12" r="2"/></svg><span>More</span></button></nav>`;
@@ -267,7 +288,7 @@ function main(){
   if(seen===null)store.set('bloom-seen',lc?lc[0]:0);else if(lc&&lc[0]>+seen){store.set('bloom-seen',lc[0]);celebrate(lc)}
 
   const tabs=document.querySelectorAll('.tabs button'),go=t=>{document.querySelectorAll('.pg').forEach(p=>p.classList.toggle('on',p.id==='pg-'+t));tabs.forEach(b=>{const on=b.dataset.t===t;b.classList.toggle('on',on);if(on)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});window.scrollTo(0,0)};
-  tabs.forEach(b=>b.onclick=()=>go(b.dataset.t));$('#next').onclick=()=>go('a');$('#ticon').innerHTML=baby(cw,'t');
+  tabs.forEach(b=>b.onclick=()=>go(b.dataset.t));$('#next').onclick=e=>{if(!e.target.closest('a'))go('a')};$('#ticon').innerHTML=baby(cw,'t');
   $('#chg').onclick=()=>{setup('',true)};
   if(wk<26)$('#kcard').style.display='none';
   let ks=0,ke=0,kn=0,iv=null;
@@ -279,25 +300,67 @@ function main(){
   
   $('#kick').onclick=()=>{if(kn>=10)return;if(!ks){ks=Date.now();iv=setInterval(kr,1000)}kn++;if(kn>=10){ke=Date.now();clearInterval(iv)}kr()};
   $('#kreset').onclick=()=>{clearInterval(iv);ks=ke=kn=0;kr()};kr();
+  const KT='bloom-team',ROLES=['Reproductive endocrinologist (REI)','OB/GYN','Midwife','Nurse practitioner (NP)','Doula','Pediatrician','Lactation consultant','Other'];
+  let T={p:[],c:[]};try{T=JSON.parse(store.get(KT)||'')||T}catch(e){}
+  T.p=T.p||[];T.c=T.c||[];
+  const saveT=()=>store.set(KT,JSON.stringify(T)),enc=encodeURIComponent,esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const ivf=(store.get('bloom-src')||'').indexOf('IVF')===0,cl=id=>T.c.find(x=>x.id===+id),pv2=id=>T.p.find(x=>x.id===+id);
+  const loc=c=>c.name+(c.addr?', '+c.addr:''),mq=c=>enc(loc(c));
+  const maps=c=>'<a class="mlink" href="https://maps.apple.com/?q='+mq(c)+'" target="_blank" rel="noopener">Apple Maps</a><a class="mlink" href="https://www.google.com/maps/search/?api=1&amp;query='+mq(c)+'" target="_blank" rel="noopener">Google Maps</a>';
+  const setv=(el,v)=>{el.value=v;if(el.selectedIndex<0)el.selectedIndex=0};
+  const tz=(()=>{try{return Intl.DateTimeFormat().resolvedOptions().timeZone}catch(e){return ''}})(),p2=n=>String(n).padStart(2,'0'),ds=d=>d.getFullYear()+p2(d.getMonth()+1)+p2(d.getDate()),ts=d=>ds(d)+'T'+p2(d.getHours())+p2(d.getMinutes())+'00';
+  function gcal(a){
+    const c=cl(a.c),pr=pv2(a.p),s=parse(a.d);let dates;
+    if(a.t){const[h,m]=a.t.split(':').map(Number);s.setHours(h,m);const e=new Date(s.getTime()+36e5);dates=ts(s)+'/'+ts(e)}
+    else{const e=new Date(s);e.setDate(e.getDate()+1);dates=ds(s)+'/'+ds(e)}
+    const det=[pr?'With '+pr.name+(pr.role?' ('+pr.role+')':''):'',pr&&pr.phone?'Phone: '+pr.phone:'','Added from Bloom'].filter(Boolean).join('\n');
+    return 'https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text='+enc(a.n)+'&amp;dates='+dates+(tz?'&amp;ctz='+enc(tz):'')+'&amp;details='+enc(det)+(c?'&amp;location='+enc(loc(c)):'');
+  }
+  let edP=null,edC=null;
+  $('#pr').innerHTML=ROLES.map(r=>'<option>'+r+'</option>').join('');
+  const sg=ivf?[ROLES[0],ROLES[1]]:[ROLES[1],ROLES[2]];
+  $('#tsug').textContent=ivf?'Suggested for IVF: a reproductive endocrinologist and an OB/GYN.':'Suggested: your OB/GYN, or a midwife or nurse practitioner.';
+  sg.forEach(r=>{const b=document.createElement('button');b.className='chip';b.textContent=r;b.onclick=()=>{$('#pr').value=r;$('#pdet').open=true;$('#pn').focus()};$('#rchips').appendChild(b)});
+  function fillSel(){
+    const pc=$('#pc'),ap=$('#ap'),ac=$('#ac'),v=[pc.value,ap.value,ac.value],co='<option value="">None</option>'+T.c.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('');
+    pc.innerHTML=co;ac.innerHTML=co;ap.innerHTML='<option value="">None</option>'+T.p.map(p=>`<option value="${p.id}">${esc(p.name)} (${esc(p.role)})</option>`).join('');
+    setv(pc,v[0]);setv(ap,v[1]);setv(ac,v[2]);
+    $('#ahint').textContent=T.p.length||T.c.length?'':'Add providers and clinics under More to pick them here.';
+  }
+  function rstP(){edP=null;['pn','pph'].forEach(i=>$('#'+i).value='');setv($('#pc'),'');$('#padd').textContent='Add provider';$('#pcancel').style.display='none';$('#pdet').open=false}
+  function rstC(){edC=null;['cn','ca'].forEach(i=>$('#'+i).value='');$('#cadd').textContent='Add clinic';$('#ccancel').style.display='none';$('#cdet').open=false}
+  function rT(){
+    $('#plist').innerHTML=T.p.length?T.p.map(p=>{const c=cl(p.c);return `<div class="ai"><div><b>${esc(p.name)}</b><br><span class="soft small">${esc(p.role)}${c?' · '+esc(c.name):''}</span>${p.phone?`<br><a class="mlink" href="tel:${esc(p.phone.replace(/[^\d+]/g,''))}">Call ${esc(p.phone)}</a>`:''}</div><div class="ab"><button class="link" data-pe="${p.id}">Edit</button><button class="link" data-pd="${p.id}" aria-label="Delete ${esc(p.name)}">Delete</button></div></div>`}).join(''):'<p class="soft small">No providers yet.</p>';
+    $('#clist').innerHTML=T.c.length?T.c.map(c=>`<div class="ai"><div><b>${esc(c.name)}</b>${c.addr?`<br><span class="soft small">${esc(c.addr)}</span>`:''}<br>${maps(c)}</div><div class="ab"><button class="link" data-ce="${c.id}">Edit</button><button class="link" data-cd="${c.id}" aria-label="Delete ${esc(c.name)}">Delete</button></div></div>`).join(''):'<p class="soft small">No clinics yet.</p>';
+    $('#plist').querySelectorAll('[data-pd]').forEach(b=>b.onclick=()=>{T.p=T.p.filter(x=>x.id!==+b.dataset.pd);saveT();if(edP===+b.dataset.pd)rstP();rT();rA()});
+    $('#plist').querySelectorAll('[data-pe]').forEach(b=>b.onclick=()=>{const p=pv2(b.dataset.pe);edP=p.id;$('#pr').value=p.role;$('#pn').value=p.name;$('#pph').value=p.phone||'';setv($('#pc'),p.c||'');$('#padd').textContent='Save changes';$('#pcancel').style.display='inline-block';$('#pdet').open=true;$('#pn').focus()});
+    $('#clist').querySelectorAll('[data-cd]').forEach(b=>b.onclick=()=>{T.c=T.c.filter(x=>x.id!==+b.dataset.cd);saveT();if(edC===+b.dataset.cd)rstC();rT();rA()});
+    $('#clist').querySelectorAll('[data-ce]').forEach(b=>b.onclick=()=>{const c=cl(b.dataset.ce);edC=c.id;$('#cn').value=c.name;$('#ca').value=c.addr||'';$('#cadd').textContent='Save changes';$('#ccancel').style.display='inline-block';$('#cdet').open=true;$('#cn').focus()});
+    fillSel();
+  }
+  $('#pcancel').onclick=rstP;$('#ccancel').onclick=rstC;
+  $('#padd').onclick=()=>{const n=$('#pn').value.trim();if(!n){$('#pn').focus();return}const o={role:$('#pr').value,name:n.slice(0,60),phone:$('#pph').value.trim().slice(0,30),c:$('#pc').value};if(edP)Object.assign(pv2(edP),o);else T.p.push(Object.assign({id:Date.now()},o));saveT();rstP();rT();rA()};
+  $('#cadd').onclick=()=>{const n=$('#cn').value.trim();if(!n){$('#cn').focus();return}const o={name:n.slice(0,80),addr:$('#ca').value.trim().slice(0,160)};if(edC)Object.assign(cl(edC),o);else T.c.push(Object.assign({id:Date.now()},o));saveT();rstC();rT();rA()};
+  $('#ap').onchange=()=>{const p=pv2($('#ap').value);if(p&&p.c)setv($('#ac'),p.c)};
   let A=[],ed=null;try{A=JSON.parse(store.get('bloom-appts')||'[]')}catch(e){}
   const save=()=>store.set('bloom-appts',JSON.stringify(A));
-  const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   const when=a=>parse(a.d).toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'})+(a.t?' at '+new Date(2000,0,1,...a.t.split(':').map(Number)).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}):'');
   const days=a=>Math.round((parse(a.d)-today())/DAY);
   const rel=a=>{const n=days(a);return n===0?'today':n===1?'tomorrow':'in '+n+' days'};
-  function reset(){ed=null;$('#at').value='';$('#ad').value='';$('#atm').value='';$('#aadd').textContent='Add appointment';$('#acancel').style.display='none'}
+  function reset(){ed=null;$('#at').value='';$('#ad').value='';$('#atm').value='';setv($('#ap'),'');setv($('#ac'),'');$('#aadd').textContent='Add appointment';$('#acancel').style.display='none'}
   function rA(){
     A.sort((x,y)=>(x.d+(x.t||'')).localeCompare(y.d+(y.t||'')));
-    const up=A.filter(a=>days(a)>=0),n=up[0];
-    $('#alist').innerHTML=up.length?up.map(a=>`<div class="ai"><div><b>${esc(a.n)}</b><br><span class="soft small">${when(a)} (${rel(a)})</span></div><div class="ab"><button class="link" data-e="${a.id}">Edit</button><button class="link" data-d="${a.id}" aria-label="Delete ${esc(a.n)}">Delete</button></div></div>`).join(''):'<p class="soft small">Nothing scheduled yet.</p>';
-    $('#next').innerHTML=n?`<div class="nextb${days(n)<=3?' soon':''}"><b>Next: ${esc(n.n)}</b><br>${when(n)} (${rel(n)})</div>`:'';
+    const up=A.filter(a=>days(a)>=0),n=up[0],gc=a=>`<a class="mlink" href="${gcal(a)}" target="_blank" rel="noopener">Add to Google Calendar</a>`;
+    $('#alist').innerHTML=up.length?up.map(a=>{const c=cl(a.c),pr=pv2(a.p);return `<div class="ai"><div><b>${esc(a.n)}</b><br><span class="soft small">${when(a)} (${rel(a)})</span>${pr?`<br><span class="soft small">With ${esc(pr.name)}</span>`:''}${c?`<br><span class="soft small">At ${esc(c.name)}</span><br>${maps(c)}`:''}<br>${gc(a)}</div><div class="ab"><button class="link" data-e="${a.id}">Edit</button><button class="link" data-d="${a.id}" aria-label="Delete ${esc(a.n)}">Delete</button></div></div>`}).join(''):'<p class="soft small">Nothing scheduled yet.</p>';
+    $('#next').innerHTML=n?`<div class="nextb${days(n)<=3?' soon':''}"><b>Next: ${esc(n.n)}</b><br>${when(n)} (${rel(n)})${cl(n.c)?'<br>At '+esc(cl(n.c).name):''}<br>${gc(n)}</div>`:'';
     $('#alist').querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{A=A.filter(x=>x.id!==+b.dataset.d);save();if(ed===+b.dataset.d)reset();rA()});
-    $('#alist').querySelectorAll('[data-e]').forEach(b=>b.onclick=()=>{const a=A.find(x=>x.id===+b.dataset.e);ed=a.id;$('#at').value=a.n;$('#ad').value=a.d;$('#atm').value=a.t||'';$('#aadd').textContent='Save changes';$('#acancel').style.display='inline-block';$('#at').focus()});
+    $('#alist').querySelectorAll('[data-e]').forEach(b=>b.onclick=()=>{const a=A.find(x=>x.id===+b.dataset.e);ed=a.id;$('#at').value=a.n;$('#ad').value=a.d;$('#atm').value=a.t||'';setv($('#ap'),a.p||'');setv($('#ac'),a.c||'');$('#aadd').textContent='Save changes';$('#acancel').style.display='inline-block';$('#at').focus()});
   }
   [['OB checkup',0],['Anatomy scan',20],['Glucose test',26],['Group B strep test',36]].forEach(([t,w])=>{const b=document.createElement('button');b.className='chip';b.textContent=t;b.onclick=()=>{$('#at').value=t;if(w){const x=new Date(due);x.setDate(x.getDate()-(280-7*w));$('#ad').value=iso(x)}$('#ad').focus()};$('#chips').appendChild(b)});
   $('#acancel').onclick=reset;
-  $('#aadd').onclick=()=>{const n=$('#at').value.trim(),d=$('#ad').value;if(!n){$('#at').focus();return}if(!d){$('#ad').focus();return}const t=$('#atm').value;if(ed){const a=A.find(x=>x.id===ed);a.n=n.slice(0,60);a.d=d;a.t=t}else A.push({id:Date.now(),n:n.slice(0,60),d,t});save();reset();rA()};
-  rA();
+  $('#aadd').onclick=()=>{const n=$('#at').value.trim(),d=$('#ad').value;if(!n){$('#at').focus();return}if(!d){$('#ad').focus();return}const o={n:n.slice(0,60),d,t:$('#atm').value,p:$('#ap').value,c:$('#ac').value};if(ed)Object.assign(A.find(x=>x.id===ed),o);else A.push(Object.assign({id:Date.now()},o));save();reset();rA()};
+  rT();rA();
+
 
   upd();
   if(wk<2)$('#pill').textContent='Very early days. Your journey begins here.';

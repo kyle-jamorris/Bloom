@@ -1,0 +1,2 @@
+// Paste your Cloudflare Worker address between the quotes, e.g. https://bloom-sync.yourname.workers.dev
+window.BLOOM_API='https://dash.cloudflare.com/47ed142cf0428d54d57b7fe1034155bc/workers/services/view/bloom-worker/production/domains’;

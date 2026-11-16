@@ -138,8 +138,10 @@ input[type=tel]{display:block;width:100%;max-width:100%;min-width:0;min-height:5
 .ab2.map{color:#7B61C9;background:rgba(123,97,201,.12);border-color:rgba(123,97,201,.35)}
 .ab2.del{color:#D6453D;background:rgba(214,69,61,.12);border-color:rgba(214,69,61,.38)}
 .nextb .ab2{margin-top:8px;background:transparent;color:inherit;border-color:currentColor}
+.ck{display:flex;align-items:center;gap:12px;min-height:46px;font-weight:700}.ck input{width:22px;height:22px;accent-color:var(--rose);flex:none}
 footer{font-size:12px;color:var(--soft);text-align:center;margin-top:18px}
 </style></head><body><main id="app"></main>
+<script src="../config.js"></script>
 <script>
 // [week, emoji, size comparison, length cm, weight g, development, note for mom]
 const D=[
@@ -228,6 +230,7 @@ const inch=v=>v<0.1?'':(v/2.54).toFixed(1)+' in';
 const wt=g=>g<1?'under 1 g':g>=1000?(g/1000).toFixed(1)+' kg ('+(g/453.6).toFixed(1)+' lb)':g+' g ('+(g/28.35).toFixed(1)+' oz)';
 let due=null,view=0,kicks=0;
 
+const PK='bloomdad';
 function setup(msg,canCancel){
   app.innerHTML=`<div class="intro"><span class="fruit">🧸</span><h1>${canCancel?'Update your date':'Congratulations, dad'}</h1>
   <p class="soft" style="margin-top:8px">Enter the same date she did, so you’re always on the same week.</p></div>
@@ -238,9 +241,14 @@ function setup(msg,canCancel){
   <label for="dt" id="dtl">Due date</label><p class="hint2">Tap the box to open the calendar</p><input type="date" id="dt"><p class="pv" id="pv"></p>
   <p class="err" id="err">${msg||''}</p>
   <button class="btn" id="go" style="width:100%;margin-top:6px">${canCancel?'Save date':'Start my journey'}</button>${canCancel?'<button class="link" id="cancel" style="display:block;margin:12px auto 0">Cancel</button>':''}</div>
-  <footer>Your date stays on this device only.</footer>`;
+  ${!canCancel&&window.BLOOM_API?'<div style="text-align:center;margin-top:14px"><button class="link" id="sjoin">I have a pairing code</button><div id="sjbox" style="display:none;margin-top:8px"><input type="text" id="sjc" placeholder="Paste your pairing code" autocapitalize="off" autocorrect="off"><p class="pv" id="sjerr"></p><button class="btn alt" id="sjgo" style="width:100%">Join</button></div></div>':''}<footer>Your date stays on this device unless you turn on sync.</footer>`;
   const pv=()=>{const v=$('#dt').value;if(!v){$('#pv').textContent='';return}const m=$('#mode').value,d=parse(v);if(m==='lmp')d.setDate(d.getDate()+280);if(m==='ivf')d.setDate(d.getDate()+266-(+$('#age').value));$('#pv').textContent='That makes your due date '+d.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric',year:'numeric'})};
   ['dt','mode','age'].forEach(i=>{$('#'+i).addEventListener('change',pv);$('#'+i).addEventListener('input',pv)});
+  if($('#sjoin')){$('#sjoin').onclick=()=>{$('#sjbox').style.display='block';$('#sjc').focus()};
+    $('#sjgo').onclick=async()=>{const m=$('#sjc').value.trim().match(/^BLOOM1\.([\w-]+)\.([\w-]+)$/);if(!m){$('#sjerr').textContent='That code doesn’t look right.';return}
+      try{const r=await fetch(window.BLOOM_API.replace(/\/$/,'')+'/h/'+m[1],{headers:{'x-ek':m[2]}});if(!r.ok)throw 0;const d=(await r.json()).data||{},mt=d.meta||{};if(!mt.due)throw 0;
+        store.set(PK+'-hh',JSON.stringify({hid:m[1],ek:m[2]}));store.set(PK+'-due',mt.due);store.set(PK+'-src',mt.src||'');store.set(PK+'-metau',mt.u||0);store.set(PK+'-appts',JSON.stringify(d.A||[]));store.set(PK+'-team',JSON.stringify({p:d.P||[],c:d.C||[]}));store.set(PK+'-inv',JSON.stringify(d.inv||[]));due=parse(mt.due);view=null;main()}
+      catch(e){$('#sjerr').textContent='Couldn’t join with that code. Check it and your connection.'}}}
   if(canCancel){$('#dt').value=iso(due);$('#cancel').onclick=()=>main();pv()}
   $('#mode').onchange=()=>{const m=$('#mode').value;$('#agebox').style.display=m==='ivf'?'block':'none';$('#dtl').textContent=m==='ivf'?'Transfer date':m==='lmp'?'First day of last period':'Due date'};
   $('#go').onclick=()=>{
@@ -249,7 +257,7 @@ function setup(msg,canCancel){
     d=new Date(d.getFullYear(),d.getMonth(),d.getDate());
     const left=Math.round((d-today())/DAY);
     if(left<-14||left>290){$('#err').textContent='That date doesn’t look right. Check the date and try again.';return}
-    store.set('bloomdad-due',iso(d));store.set('bloomdad-src',srcTxt);due=d;view=null;main();
+    store.set('bloomdad-due',iso(d));store.set('bloomdad-src',srcTxt);store.set('bloomdad-metau',Date.now());due=d;view=null;main();
   };
 }
 
@@ -281,6 +289,10 @@ function main(){
   <div class="card due"><div><b id="dueline"></b><span class="soft small" id="srcline"></span></div><button class="link" id="chg">Change</button></div>
   <div class="ph"><h2 class="sec">Care team</h2><button class="btn sm" id="popen">+ Add</button></div><div id="plist"></div>
   <div class="ph"><h2 class="sec">Clinics</h2><button class="btn sm" id="copen">+ Add</button></div><div id="clist"></div>
+  <div class="ph"><h2 class="sec">Family</h2><button class="btn sm" id="iopen">+ Invite</button></div><p class="soft small" id="ihint" style="margin:-4px 0 10px"></p><div id="ilist"></div>
+  <div class="card" id="syncc" style="margin-top:14px"><h2>Sync</h2><p class="soft small" id="syncst"></p><div class="acts" style="display:flex" id="syncb"></div></div>
+  <div class="sheet" id="s-i" role="dialog" aria-modal="true" aria-labelledby="s-i-t"><div class="sh-bg" data-close></div><div class="sh-box"><div class="sh-h"><h2 id="s-i-t">Invite someone</h2><button class="link" data-close>Close</button></div><label class="fl" for="in">Name</label><input type="text" id="in" placeholder="e.g. Grandma Sue"><label class="fl" for="ir">Who are they?</label><select id="ir"></select><p class="soft small" style="margin-top:14px"><b>Baby development is always shared.</b> Choose anything extra:</p><label class="ck"><input type="checkbox" id="ia">Upcoming appointments</label><label class="ck"><input type="checkbox" id="it">Care team (names and roles)</label><label class="ck"><input type="checkbox" id="ic">Clinics and addresses</label><p class="soft small">Phone numbers are never shared.</p><div class="arow"><button class="btn" id="iadd">Create link</button></div></div></div>
+  <div class="sheet" id="s-j" role="dialog" aria-modal="true" aria-labelledby="s-j-t"><div class="sh-bg" data-close></div><div class="sh-box"><div class="sh-h"><h2 id="s-j-t">Join with a code</h2><button class="link" data-close>Close</button></div><label class="fl" for="jc">Pairing code from your partner</label><input type="text" id="jc" placeholder="BLOOM1.…" autocapitalize="off" autocorrect="off"><p class="pv" id="jerr"></p><div class="arow"><button class="btn" id="jadd">Join</button></div></div></div>
   <div class="sheet" id="s-p" role="dialog" aria-modal="true" aria-labelledby="s-p-t"><div class="sh-bg" data-close></div><div class="sh-box"><div class="sh-h"><h2 id="s-p-t">New provider</h2><button class="link" data-close>Close</button></div><div class="chips" id="rchips"></div><label class="fl" for="pr">Role</label><select id="pr"></select><label class="fl" for="pn">Name</label><input type="text" id="pn" placeholder="e.g. Dr. Rivera"><label class="fl" for="pph">Phone (optional)</label><input type="tel" id="pph" placeholder="(555) 555-5555"><label class="fl" for="pc">Clinic (optional)</label><select id="pc"></select><div class="arow"><button class="btn" id="padd">Add provider</button></div></div></div>
   <div class="sheet" id="s-c" role="dialog" aria-modal="true" aria-labelledby="s-c-t"><div class="sh-bg" data-close></div><div class="sh-box"><div class="sh-h"><h2 id="s-c-t">New clinic</h2><button class="link" data-close>Close</button></div><label class="fl" for="cn">Clinic name</label><input type="text" id="cn" placeholder="e.g. Valley Women’s Health"><label class="fl" for="ca">Address</label><input type="text" id="ca" placeholder="Street, city, state"><div class="arow"><button class="btn" id="cadd">Add clinic</button></div></div></div>
   <div class="card" id="kcard"><div class="row"><div><h2>Kicks I’ve felt</h2><p class="soft small">Just a fun keepsake. Dads can often feel kicks from about week 24 to 28. If she notices less movement, she should call her provider right away.</p></div>
@@ -342,8 +354,8 @@ function main(){
   const KT='bloomdad-team',ROLES=['Reproductive endocrinologist (REI)','OB/GYN','Midwife','Nurse practitioner (NP)','Doula','Pediatrician','Lactation consultant','Other'],COL=['#8FD3BC','#FFB8CB','#CDB8F0','#FFDB8E','#9CCBF2','#F6B38E'];
   let T={p:[],c:[]};try{T=JSON.parse(store.get(KT)||'')||T}catch(e){}
   T.p=T.p||[];T.c=T.c||[];
-  const saveT=()=>store.set(KT,JSON.stringify(T)),enc=encodeURIComponent,esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-  const ivf=(store.get('bloomdad-src')||'').indexOf('IVF')===0,cl=id=>T.c.find(x=>x.id===+id),pv2=id=>T.p.find(x=>x.id===+id);
+  const saveT=()=>{store.set(KT,JSON.stringify(T));syncSoon()},enc=encodeURIComponent,esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const ivf=(store.get('bloomdad-src')||'').indexOf('IVF')===0,live=a=>a.filter(x=>!x.del),cl=id=>T.c.find(x=>x.id===+id&&!x.del),pv2=id=>T.p.find(x=>x.id===+id&&!x.del);
   const loc=c=>c.name+(c.addr?', '+c.addr:''),mq=c=>enc(loc(c));
   const sv=p=>'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+p+'</svg>',I={call:sv('<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/>'),edit:sv('<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/>'),del:sv('<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>'),pin:sv('<path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>'),cal:sv('<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18M12 13v5M9.5 15.5h5"/>')};
   const maps=c=>'<a class="ab2 map" href="https://maps.apple.com/?q='+mq(c)+'" target="_blank" rel="noopener">'+I.pin+'Apple Maps</a><a class="ab2 map" href="https://www.google.com/maps/search/?api=1&amp;query='+mq(c)+'" target="_blank" rel="noopener">'+I.pin+'Google Maps</a>';
@@ -360,47 +372,119 @@ function main(){
   const PIN='<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>';
   const openSh=id=>$('#'+id).classList.add('show'),closeSh=id=>$('#'+id).classList.remove('show');
   let edP=null,edC=null,A=[],ed=null;try{A=JSON.parse(store.get('bloomdad-appts')||'[]')}catch(e){}
-  const save=()=>store.set('bloomdad-appts',JSON.stringify(A));
-  document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>({'s-a':reset,'s-p':rstP,'s-c':rstC})[b.closest('.sheet').id]());
+  const save=()=>{store.set('bloomdad-appts',JSON.stringify(A));syncSoon()};
+  document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>({'s-a':reset,'s-p':rstP,'s-c':rstC,'s-i':rstI,'s-j':()=>closeSh('s-j')})[b.closest('.sheet').id]());
   ['plist','clist','alist'].forEach(id=>{const el=$('#'+id),tg=e=>{const r=e.target.closest('.ai');if(!r||e.target.closest('a,button'))return;r.classList.toggle('open');r.setAttribute('aria-expanded',r.classList.contains('open'))};el.addEventListener('click',tg);el.addEventListener('keydown',e=>{if(e.target.closest('a,button')||(e.key!=='Enter'&&e.key!==' '))return;e.preventDefault();tg(e)})});
   $('#pr').innerHTML=ROLES.map(r=>'<option>'+r+'</option>').join('');
   const sg=ivf?[ROLES[0],ROLES[1]]:[ROLES[1],ROLES[2]];
   sg.forEach(r=>{const b=document.createElement('button');b.className='chip';b.textContent=r;b.onclick=()=>{$('#pr').value=r;$('#pn').focus()};$('#rchips').appendChild(b)});
   function fillSel(){
-    const pc=$('#pc'),ap=$('#ap'),ac=$('#ac'),v=[pc.value,ap.value,ac.value],co='<option value="">None</option>'+T.c.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('');
-    pc.innerHTML=co;ac.innerHTML=co;ap.innerHTML='<option value="">None</option>'+T.p.map(p=>`<option value="${p.id}">${esc(p.name)} (${esc(p.role)})</option>`).join('');
+    const pc=$('#pc'),ap=$('#ap'),ac=$('#ac'),v=[pc.value,ap.value,ac.value],co='<option value="">None</option>'+live(T.c).map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('');
+    pc.innerHTML=co;ac.innerHTML=co;ap.innerHTML='<option value="">None</option>'+live(T.p).map(p=>`<option value="${p.id}">${esc(p.name)} (${esc(p.role)})</option>`).join('');
     setv(pc,v[0]);setv(ap,v[1]);setv(ac,v[2]);
-    $('#ahint').textContent=T.p.length||T.c.length?'':'Add providers and clinics under More to pick them here.';
+    $('#ahint').textContent=live(T.p).length||live(T.c).length?'':'Add providers and clinics under More to pick them here.';
   }
   function rstP(){edP=null;['pn','pph'].forEach(i=>$('#'+i).value='');setv($('#pc'),'');$('#padd').textContent='Add provider';$('#s-p-t').textContent='New provider';closeSh('s-p')}
   function rstC(){edC=null;['cn','ca'].forEach(i=>$('#'+i).value='');$('#cadd').textContent='Add clinic';$('#s-c-t').textContent='New clinic';closeSh('s-c')}
   function reset(){ed=null;$('#at').value='';$('#ad').value='';$('#atm').value='';setv($('#ap'),'');setv($('#ac'),'');$('#aadd').textContent='Add appointment';$('#s-a-t').textContent='New appointment';closeSh('s-a')}
   function rT(){
-    $('#plist').innerHTML=T.p.length?T.p.map(p=>{const c=cl(p.c),i=Math.max(0,ROLES.indexOf(p.role));return `<div class="ai" tabindex="0" role="button" aria-expanded="false"><div class="av" style="background:${COL[i%COL.length]}">${esc(ini(p.name))}</div><div class="ac"><b>${esc(p.name)}</b><span class="soft small">${esc(p.role)}</span>${c?`<span class="soft small">${esc(c.name)}</span>`:''}<div class="acts">${p.phone?`<a class="ab2 call" href="tel:${esc(p.phone.replace(/[^\d+]/g,''))}">${I.call}Call</a>`:''}<button class="ab2" data-pe="${p.id}">${I.edit}Edit</button><button class="ab2 del" data-pd="${p.id}" aria-label="Delete ${esc(p.name)}">${I.del}Delete</button></div></div><i class="chev">›</i></div>`}).join(''):'<p class="soft small">No providers yet. Tap + Add.</p>';
-    $('#clist').innerHTML=T.c.length?T.c.map(c=>`<div class="ai" tabindex="0" role="button" aria-expanded="false"><div class="pn">${PIN}</div><div class="ac"><b>${esc(c.name)}</b>${c.addr?`<span class="soft small">${esc(c.addr)}</span>`:''}<div class="acts">${maps(c)}<button class="ab2" data-ce="${c.id}">${I.edit}Edit</button><button class="ab2 del" data-cd="${c.id}" aria-label="Delete ${esc(c.name)}">${I.del}Delete</button></div></div><i class="chev">›</i></div>`).join(''):'<p class="soft small">No clinics yet. Tap + Add.</p>';
-    $('#plist').querySelectorAll('[data-pd]').forEach(b=>b.onclick=()=>{if(!confirm('Remove this provider?'))return;T.p=T.p.filter(x=>x.id!==+b.dataset.pd);saveT();rT();rA()});
+    $('#plist').innerHTML=live(T.p).length?live(T.p).map(p=>{const c=cl(p.c),i=Math.max(0,ROLES.indexOf(p.role));return `<div class="ai" tabindex="0" role="button" aria-expanded="false"><div class="av" style="background:${COL[i%COL.length]}">${esc(ini(p.name))}</div><div class="ac"><b>${esc(p.name)}</b><span class="soft small">${esc(p.role)}</span>${c?`<span class="soft small">${esc(c.name)}</span>`:''}<div class="acts">${p.phone?`<a class="ab2 call" href="tel:${esc(p.phone.replace(/[^\d+]/g,''))}">${I.call}Call</a>`:''}<button class="ab2" data-pe="${p.id}">${I.edit}Edit</button><button class="ab2 del" data-pd="${p.id}" aria-label="Delete ${esc(p.name)}">${I.del}Delete</button></div></div><i class="chev">›</i></div>`}).join(''):'<p class="soft small">No providers yet. Tap + Add.</p>';
+    $('#clist').innerHTML=live(T.c).length?live(T.c).map(c=>`<div class="ai" tabindex="0" role="button" aria-expanded="false"><div class="pn">${PIN}</div><div class="ac"><b>${esc(c.name)}</b>${c.addr?`<span class="soft small">${esc(c.addr)}</span>`:''}<div class="acts">${maps(c)}<button class="ab2" data-ce="${c.id}">${I.edit}Edit</button><button class="ab2 del" data-cd="${c.id}" aria-label="Delete ${esc(c.name)}">${I.del}Delete</button></div></div><i class="chev">›</i></div>`).join(''):'<p class="soft small">No clinics yet. Tap + Add.</p>';
+    $('#plist').querySelectorAll('[data-pd]').forEach(b=>b.onclick=()=>{if(!confirm('Remove this provider?'))return;{const x=T.p.find(y=>y.id===+b.dataset.pd);x.del=true;x.u=Date.now()}saveT();rT();rA()});
     $('#plist').querySelectorAll('[data-pe]').forEach(b=>b.onclick=()=>{const p=pv2(b.dataset.pe);edP=p.id;$('#pr').value=p.role;$('#pn').value=p.name;$('#pph').value=p.phone||'';setv($('#pc'),p.c||'');$('#padd').textContent='Save changes';$('#s-p-t').textContent='Edit provider';openSh('s-p')});
-    $('#clist').querySelectorAll('[data-cd]').forEach(b=>b.onclick=()=>{if(!confirm('Remove this clinic?'))return;T.c=T.c.filter(x=>x.id!==+b.dataset.cd);saveT();rT();rA()});
+    $('#clist').querySelectorAll('[data-cd]').forEach(b=>b.onclick=()=>{if(!confirm('Remove this clinic?'))return;{const x=T.c.find(y=>y.id===+b.dataset.cd);x.del=true;x.u=Date.now()}saveT();rT();rA()});
     $('#clist').querySelectorAll('[data-ce]').forEach(b=>b.onclick=()=>{const c=cl(b.dataset.ce);edC=c.id;$('#cn').value=c.name;$('#ca').value=c.addr||'';$('#cadd').textContent='Save changes';$('#s-c-t').textContent='Edit clinic';openSh('s-c')});
     fillSel();
   }
   $('#popen').onclick=()=>{rstP();openSh('s-p')};$('#copen').onclick=()=>{rstC();openSh('s-c')};$('#aopen').onclick=()=>{reset();openSh('s-a')};
-  $('#padd').onclick=()=>{const n=$('#pn').value.trim();if(!n){$('#pn').focus();return}const o={role:$('#pr').value,name:n.slice(0,60),phone:$('#pph').value.trim().slice(0,30),c:$('#pc').value};if(edP)Object.assign(pv2(edP),o);else T.p.push(Object.assign({id:Date.now()},o));saveT();rstP();rT();rA()};
-  $('#cadd').onclick=()=>{const n=$('#cn').value.trim();if(!n){$('#cn').focus();return}const o={name:n.slice(0,80),addr:$('#ca').value.trim().slice(0,160)};if(edC)Object.assign(cl(edC),o);else T.c.push(Object.assign({id:Date.now()},o));saveT();rstC();rT();rA()};
+  $('#padd').onclick=()=>{const n=$('#pn').value.trim();if(!n){$('#pn').focus();return}const o={role:$('#pr').value,name:n.slice(0,60),phone:$('#pph').value.trim().slice(0,30),c:$('#pc').value};if(edP)Object.assign(pv2(edP),o,{u:Date.now()});else T.p.push(Object.assign({id:Date.now(),u:Date.now()},o));saveT();rstP();rT();rA()};
+  $('#cadd').onclick=()=>{const n=$('#cn').value.trim();if(!n){$('#cn').focus();return}const o={name:n.slice(0,80),addr:$('#ca').value.trim().slice(0,160)};if(edC)Object.assign(cl(edC),o,{u:Date.now()});else T.c.push(Object.assign({id:Date.now(),u:Date.now()},o));saveT();rstC();rT();rA()};
   $('#ap').onchange=()=>{const p=pv2($('#ap').value);if(p&&p.c)setv($('#ac'),p.c)};
   const when=a=>parse(a.d).toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'})+(a.t?' at '+new Date(2000,0,1,...a.t.split(':').map(Number)).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}):'');
   const days=a=>Math.round((parse(a.d)-today())/DAY),rel=a=>{const n=days(a);return n===0?'today':n===1?'tomorrow':'in '+n+' days'};
   function rA(){
     A.sort((x,y)=>(x.d+(x.t||'')).localeCompare(y.d+(y.t||'')));
-    const up=A.filter(a=>days(a)>=0),n=up[0],gc=a=>`<a class="ab2 cal" href="${gcal(a)}" target="_blank" rel="noopener">${I.cal}Add to Google Calendar</a>`;
+    const up=A.filter(a=>!a.del&&days(a)>=0),n=up[0],gc=a=>`<a class="ab2 cal" href="${gcal(a)}" target="_blank" rel="noopener">${I.cal}Add to Google Calendar</a>`;
     $('#alist').innerHTML=up.length?up.map(a=>{const c=cl(a.c),pr=pv2(a.p),dt=parse(a.d),w=[pr?esc(pr.name):'',c?esc(c.name):''].filter(Boolean).join(' · ');return `<div class="ai" tabindex="0" role="button" aria-expanded="false"><div class="dbk"><small>${dt.toLocaleDateString(undefined,{month:'short'}).toUpperCase()}</small><b>${dt.getDate()}</b></div><div class="ac"><b>${esc(a.n)}</b><span class="soft small">${when(a).replace(/^\w+, \w+ \d+/,dt.toLocaleDateString(undefined,{weekday:'short'}))} · ${rel(a)}</span>${w?`<span class="soft small">${w}</span>`:''}<div class="acts">${gc(a)}${c?maps(c):''}<button class="ab2" data-e="${a.id}">${I.edit}Edit</button><button class="ab2 del" data-d="${a.id}" aria-label="Delete ${esc(a.n)}">${I.del}Delete</button></div></div><i class="chev">›</i></div>`}).join(''):'<p class="soft small">Nothing scheduled yet. Tap + Add.</p>';
     $('#next').innerHTML=n?`<div class="nextb${days(n)<=3?' soon':''}"><b>Next: ${esc(n.n)}</b><br>${when(n)} (${rel(n)})${cl(n.c)?'<br>At '+esc(cl(n.c).name):''}<br>${gc(n)}</div>`:'';
-    $('#alist').querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{if(!confirm('Delete this appointment?'))return;A=A.filter(x=>x.id!==+b.dataset.d);save();rA()});
+    $('#alist').querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{if(!confirm('Delete this appointment?'))return;{const x=A.find(y=>y.id===+b.dataset.d);x.del=true;x.u=Date.now()}save();rA()});
     $('#alist').querySelectorAll('[data-e]').forEach(b=>b.onclick=()=>{const a=A.find(x=>x.id===+b.dataset.e);ed=a.id;$('#at').value=a.n;$('#ad').value=a.d;$('#atm').value=a.t||'';setv($('#ap'),a.p||'');setv($('#ac'),a.c||'');$('#aadd').textContent='Save changes';$('#s-a-t').textContent='Edit appointment';openSh('s-a')});
   }
   [['OB checkup',0],['Anatomy scan',20],['Glucose test',26],['Group B strep test',36]].forEach(([t,w])=>{const b=document.createElement('button');b.className='chip';b.textContent=t;b.onclick=()=>{$('#at').value=t;if(w){const x=new Date(due);x.setDate(x.getDate()-(280-7*w));$('#ad').value=iso(x)}$('#ad').focus()};$('#chips').appendChild(b)});
-  $('#aadd').onclick=()=>{const n=$('#at').value.trim(),d=$('#ad').value;if(!n){$('#at').focus();return}if(!d){$('#ad').focus();return}const o={n:n.slice(0,60),d,t:$('#atm').value,p:$('#ap').value,c:$('#ac').value};if(ed)Object.assign(A.find(x=>x.id===ed),o);else A.push(Object.assign({id:Date.now()},o));save();reset();rA()};
+  $('#aadd').onclick=()=>{const n=$('#at').value.trim(),d=$('#ad').value;if(!n){$('#at').focus();return}if(!d){$('#ad').focus();return}const o={n:n.slice(0,60),d,t:$('#atm').value,p:$('#ap').value,c:$('#ac').value};if(ed)Object.assign(A.find(x=>x.id===ed),o,{u:Date.now()});else A.push(Object.assign({id:Date.now(),u:Date.now()},o));save();reset();rA()};
   rT();rA();
+  let hh=null,INV=[],syncT=null,syncing=false;
+  const API=(window.BLOOM_API||'').replace(/\/$/,'');
+  try{hh=JSON.parse(store.get(PK+'-hh')||'null')}catch(e){}
+  try{INV=JSON.parse(store.get(PK+'-inv')||'[]')}catch(e){}
+  const byId=(a,b)=>a.id<b.id?-1:a.id>b.id?1:0,cj=o=>JSON.stringify(o,(k,v)=>v&&typeof v==='object'&&!Array.isArray(v)?Object.keys(v).sort().reduce((r,x)=>(r[x]=v[x],r),{}):v);
+  const mrg=(a,b)=>{const m=new Map();a.concat(b).forEach(x=>{const o=m.get(x.id);if(!o||(x.u||0)>(o.u||0))m.set(x.id,x)});return[...m.values()].sort(byId)};
+  const setSt=t=>{const e=$('#syncst');if(e)e.textContent=t};
+  const snap=()=>({meta:{due:store.get(PK+'-due')||'',src:store.get(PK+'-src')||'',u:+store.get(PK+'-metau')||0},A:A.slice().sort(byId),P:T.p.slice().sort(byId),C:T.c.slice().sort(byId),inv:INV.slice().sort(byId)});
+  const persist=()=>{store.set(KT,JSON.stringify(T));store.set(PK+'-appts',JSON.stringify(A));store.set(PK+'-inv',JSON.stringify(INV))};
+  const syncSoon=()=>{if(!API||!hh)return;clearTimeout(syncT);syncT=setTimeout(sync,900)};
+  async function sync(){
+    if(!API||!hh||syncing)return;syncing=true;setSt('Syncing…');let reload=false;
+    try{
+      const r=await fetch(API+'/h/'+hh.hid,{headers:{'x-ek':hh.ek}});
+      if(r.status===403||r.status===404){setSt('This sync is no longer valid. Stop syncing, then start again.');return}
+      if(!r.ok)throw 0;
+      const rd=(await r.json()).data||{},rm=rd.meta||{};
+      A=mrg(A,rd.A||[]);T.p=mrg(T.p,rd.P||[]);T.c=mrg(T.c,rd.C||[]);INV=mrg(INV,rd.inv||[]);
+      if((rm.u||0)>(+store.get(PK+'-metau')||0)&&rm.due){reload=rm.due!==store.get(PK+'-due');store.set(PK+'-due',rm.due);store.set(PK+'-src',rm.src||'');store.set(PK+'-metau',rm.u)}
+      persist();
+      const mine=snap(),theirs={meta:{due:rm.due||'',src:rm.src||'',u:rm.u||0},A:(rd.A||[]).slice().sort(byId),P:(rd.P||[]).slice().sort(byId),C:(rd.C||[]).slice().sort(byId),inv:(rd.inv||[]).slice().sort(byId)};
+      if(cj(mine)!==cj(theirs)){const w=await fetch(API+'/h/'+hh.hid,{method:'PUT',headers:{'x-ek':hh.ek,'content-type':'application/json'},body:JSON.stringify({data:mine})});if(!w.ok)throw 0}
+      setSt('Synced just now');
+    }catch(e){setSt('Offline. It will sync when you’re back online.')}
+    finally{syncing=false}
+    if(reload){due=parse(store.get(PK+'-due'));view=null;main();return}
+    rT();rA();rI();
+  }
+  const copyTxt=t=>{if(navigator.clipboard&&navigator.clipboard.writeText)return navigator.clipboard.writeText(t).catch(()=>prompt('Copy this:',t));prompt('Copy this:',t)};
+  function rS(){
+    const b=$('#syncb');b.innerHTML='';
+    const mk=(t,cls,fn)=>{const x=document.createElement('button');x.className='ab2'+(cls?' '+cls:'');x.textContent=t;x.onclick=fn;b.appendChild(x)};
+    if(!API)setSt('Sync isn’t set up yet.');
+    else if(!hh){setSt('Not syncing yet. Start on one phone, then join from the other with a code.');mk('Start syncing','cal',startSync);mk('Join with a code','',()=>{$('#jc').value='';$('#jerr').textContent='';openSh('s-j')})}
+    else{if(!$('#syncst').textContent)setSt('Syncing is on.');mk('Copy pairing code','cal',shareCode);mk('Sync now','',sync);mk('Stop and delete synced data','del',stopSync)}
+    $('#ihint').textContent=hh?'Each person gets their own link and sees only what you choose.':'Turn on sync below to invite family.';
+    $('#iopen').disabled=!hh;
+  }
+  async function startSync(){
+    try{setSt('Starting…');if(!(+store.get(PK+'-metau')))store.set(PK+'-metau',Date.now());
+      const r=await fetch(API+'/h',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({data:snap()})});if(!r.ok)throw 0;
+      const j=await r.json();hh={hid:j.hid,ek:j.ek};store.set(PK+'-hh',JSON.stringify(hh));rS();setSt('Syncing is on. Tap “Copy pairing code” to connect your partner’s phone.')}
+    catch(e){setSt('Couldn’t reach the sync server. Check your connection and try again.')}
+  }
+  function shareCode(){const code='BLOOM1.'+hh.hid+'.'+hh.ek;if(navigator.share)navigator.share({text:code}).catch(()=>{});else{copyTxt(code);setSt('Pairing code copied.')}}
+  async function stopSync(){
+    if(!confirm('Stop syncing and delete the synced copy from the server? Your data stays on this phone, and family links stop working.'))return;
+    try{await fetch(API+'/h/'+hh.hid,{method:'DELETE',headers:{'x-ek':hh.ek}})}catch(e){}
+    hh=null;INV=[];store.set(PK+'-hh','');store.set(PK+'-inv','[]');rS();rI();setSt('Sync is off.');
+  }
+  $('#jadd').onclick=()=>{const m=$('#jc').value.trim().match(/^BLOOM1\.([\w-]+)\.([\w-]+)$/);if(!m){$('#jerr').textContent='That code doesn’t look right.';return}hh={hid:m[1],ek:m[2]};store.set(PK+'-hh',JSON.stringify(hh));store.set(PK+'-metau',0);closeSh('s-j');rS();sync()};
+  const FR=['Grandparent','Aunt or uncle','Friend','Other family'],fam=()=>location.origin+location.pathname.replace(/\/(mom|dad)\/(index\.html)?$/,'/family/');
+  const rndT=()=>btoa(String.fromCharCode(...crypto.getRandomValues(new Uint8Array(16)))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+  const saveI=()=>{store.set(PK+'-inv',JSON.stringify(INV));syncSoon()};
+  I.copy=sv('<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/>');
+  let edI=null;
+  $('#ir').innerHTML=FR.map(r=>'<option>'+r+'</option>').join('');
+  const shSum=i=>['baby development'].concat(i.sh&&i.sh.a?['appointments']:[],i.sh&&i.sh.t?['care team']:[],i.sh&&i.sh.c?['clinics']:[]).join(', ');
+  function rstI(){edI=null;$('#in').value='';setv($('#ir'),FR[0]);['ia','it','ic'].forEach(x=>$('#'+x).checked=false);$('#iadd').textContent='Create link';$('#s-i-t').textContent='Invite someone';closeSh('s-i')}
+  function rI(){
+    const L=live(INV);
+    $('#ilist').innerHTML=L.length?L.map(i=>`<div class="ai" tabindex="0" role="button" aria-expanded="false"><div class="av" style="background:${COL[(FR.indexOf(i.role)+1)%COL.length]}">${esc(ini(i.name))}</div><div class="ac"><b>${esc(i.name)}</b><span class="soft small">${esc(i.role)}</span><span class="soft small">Sees: ${shSum(i)}</span><div class="acts"><button class="ab2 cal" data-ic="${i.id}">${I.copy}Copy link</button>${navigator.share?`<button class="ab2" data-is="${i.id}">Share</button>`:''}<button class="ab2" data-ie="${i.id}">${I.edit}Edit</button><button class="ab2 del" data-ix="${i.id}" aria-label="Remove ${esc(i.name)}">${I.del}Remove</button></div></div><i class="chev">›</i></div>`).join(''):'<p class="soft small">No one invited yet.</p>';
+    const g=id=>INV.find(x=>x.id===+id);
+    $('#ilist').querySelectorAll('[data-ic]').forEach(b=>b.onclick=()=>{copyTxt(fam()+'#'+g(b.dataset.ic).tok);b.lastChild.textContent='Copied'});
+    $('#ilist').querySelectorAll('[data-is]').forEach(b=>b.onclick=()=>navigator.share({title:'Bloom',text:'Follow our baby’s journey:',url:fam()+'#'+g(b.dataset.is).tok}).catch(()=>{}));
+    $('#ilist').querySelectorAll('[data-ie]').forEach(b=>b.onclick=()=>{const i=g(b.dataset.ie);edI=i.id;$('#in').value=i.name;setv($('#ir'),i.role);$('#ia').checked=!!(i.sh&&i.sh.a);$('#it').checked=!!(i.sh&&i.sh.t);$('#ic').checked=!!(i.sh&&i.sh.c);$('#iadd').textContent='Save changes';$('#s-i-t').textContent='Edit invite';openSh('s-i')});
+    $('#ilist').querySelectorAll('[data-ix]').forEach(b=>b.onclick=()=>{if(!confirm('Remove this person? Their link will stop working.'))return;const i=g(b.dataset.ix);i.del=true;i.tok='';i.u=Date.now();saveI();rI();sync()});
+  }
+  $('#iopen').onclick=()=>{rstI();openSh('s-i')};
+  $('#iadd').onclick=()=>{const n=$('#in').value.trim();if(!n){$('#in').focus();return}const sh={a:+$('#ia').checked,t:+$('#it').checked,c:+$('#ic').checked},o={name:n.slice(0,60),role:$('#ir').value,sh,u:Date.now()};if(edI)Object.assign(INV.find(x=>x.id===edI),o);else INV.push(Object.assign({id:Date.now(),tok:rndT()},o));saveI();rstI();rI()};
+  rS();rI();sync();window.__bloomSync=sync;
+  if(!window.__bloomVisL){window.__bloomVisL=1;document.addEventListener('visibilitychange',()=>{if(!document.hidden&&window.__bloomSync)window.__bloomSync()})}
 
 
 

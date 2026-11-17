@@ -266,7 +266,8 @@ function main(){
   <div class="ph"><h2 class="sec">Clinics</h2><button class="btn sm" id="copen">+ Add</button></div><div id="clist"></div>
   <div class="ph"><h2 class="sec">Family</h2><button class="btn sm" id="iopen">+ Invite</button></div><p class="soft small" id="ihint" style="margin:-4px 0 10px"></p><div id="ilist"></div>
   <div class="card" id="syncc" style="margin-top:14px"><h2>Sync</h2><p class="soft small" id="syncst"></p><div class="acts" style="display:flex" id="syncb"></div></div>
-  <div class="sheet" id="s-i" role="dialog" aria-modal="true" aria-labelledby="s-i-t"><div class="sh-bg" data-close></div><div class="sh-box"><div class="sh-h"><h2 id="s-i-t">Invite someone</h2><button class="link" data-close>Close</button></div><label class="fl" for="in">Name</label><input type="text" id="in" placeholder="e.g. Grandma Sue"><label class="fl" for="ir">Who are they?</label><select id="ir"></select><p class="soft small" style="margin-top:14px"><b>Baby development is always shared.</b> Choose anything extra:</p><label class="ck"><input type="checkbox" id="ia">Upcoming appointments</label><label class="ck"><input type="checkbox" id="it">Care team (names and roles)</label><label class="ck"><input type="checkbox" id="ic">Clinics and addresses</label><p class="soft small">Phone numbers are never shared.</p><div class="arow"><button class="btn" id="iadd">Create link</button></div></div></div>
+  <div class="sheet" id="s-i" role="dialog" aria-modal="true" aria-labelledby="s-i-t"><div class="sh-bg" data-close></div><div class="sh-box"><div class="sh-h"><h2 id="s-i-t">Invite someone</h2><button class="link" data-close>Close</button></div><div id="iform"><label class="fl" for="in">Name</label><input type="text" id="in" placeholder="e.g. Grandma Sue"><label class="fl" for="ir">Who are they?</label><select id="ir"></select><p class="soft small" style="margin-top:14px"><b>Baby development is always shared.</b> Choose anything extra:</p><label class="ck"><input type="checkbox" id="ia">Upcoming appointments</label><label class="ck"><input type="checkbox" id="it">Care team (names and roles)</label><label class="ck"><input type="checkbox" id="ic">Clinics and addresses</label><p class="soft small">Phone numbers are never shared.</p><div class="arow"><button class="btn" id="iadd">Create link</button></div></div>
+  <div id="ires" style="display:none"><p style="margin-top:12px">Send this link to <b id="irn"></b>. Anyone who has it can see what you chose to share.</p><input type="text" id="ilk" readonly style="margin-top:10px"><div class="arow"><button class="btn" id="icp">Copy link</button><button class="btn alt" id="ish">Share</button></div><button class="link" id="idone" style="display:block;margin:10px auto 0">Done</button></div></div></div>
   <div class="sheet" id="s-j" role="dialog" aria-modal="true" aria-labelledby="s-j-t"><div class="sh-bg" data-close></div><div class="sh-box"><div class="sh-h"><h2 id="s-j-t">Join with a code</h2><button class="link" data-close>Close</button></div><label class="fl" for="jc">Pairing code from your partner</label><input type="text" id="jc" placeholder="BLOOM1.…" autocapitalize="off" autocorrect="off"><p class="pv" id="jerr"></p><div class="arow"><button class="btn" id="jadd">Join</button></div></div></div>
   <div class="sheet" id="s-p" role="dialog" aria-modal="true" aria-labelledby="s-p-t"><div class="sh-bg" data-close></div><div class="sh-box"><div class="sh-h"><h2 id="s-p-t">New provider</h2><button class="link" data-close>Close</button></div><div class="chips" id="rchips"></div><label class="fl" for="pr">Role</label><select id="pr"></select><label class="fl" for="pn">Name</label><input type="text" id="pn" placeholder="e.g. Dr. Rivera"><label class="fl" for="pph">Phone (optional)</label><input type="tel" id="pph" placeholder="(555) 555-5555"><label class="fl" for="pc">Clinic (optional)</label><select id="pc"></select><div class="arow"><button class="btn" id="padd">Add provider</button></div></div></div>
   <div class="sheet" id="s-c" role="dialog" aria-modal="true" aria-labelledby="s-c-t"><div class="sh-bg" data-close></div><div class="sh-box"><div class="sh-h"><h2 id="s-c-t">New clinic</h2><button class="link" data-close>Close</button></div><label class="fl" for="cn">Clinic name</label><input type="text" id="cn" placeholder="e.g. Valley Women’s Health"><label class="fl" for="ca">Address</label><input type="text" id="ca" placeholder="Street, city, state"><div class="arow"><button class="btn" id="cadd">Add clinic</button></div></div></div>
@@ -355,7 +356,7 @@ function main(){
   let edP=null,edC=null,A=[],ed=null;try{A=JSON.parse(store.get('bloom-appts')||'[]')}catch(e){}
   const save=()=>{store.set('bloom-appts',JSON.stringify(A));syncSoon()};
   document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>({'s-a':reset,'s-p':rstP,'s-c':rstC,'s-i':rstI,'s-j':()=>closeSh('s-j')})[b.closest('.sheet').id]());
-  ['plist','clist','alist'].forEach(id=>{const el=$('#'+id),tg=e=>{const r=e.target.closest('.ai');if(!r||e.target.closest('a,button'))return;r.classList.toggle('open');r.setAttribute('aria-expanded',r.classList.contains('open'))};el.addEventListener('click',tg);el.addEventListener('keydown',e=>{if(e.target.closest('a,button')||(e.key!=='Enter'&&e.key!==' '))return;e.preventDefault();tg(e)})});
+  ['plist','clist','alist','ilist'].forEach(id=>{const el=$('#'+id),tg=e=>{const r=e.target.closest('.ai');if(!r||e.target.closest('a,button'))return;r.classList.toggle('open');r.setAttribute('aria-expanded',r.classList.contains('open'))};el.addEventListener('click',tg);el.addEventListener('keydown',e=>{if(e.target.closest('a,button')||(e.key!=='Enter'&&e.key!==' '))return;e.preventDefault();tg(e)})});
   $('#pr').innerHTML=ROLES.map(r=>'<option>'+r+'</option>').join('');
   const sg=ivf?[ROLES[0],ROLES[1]]:[ROLES[1],ROLES[2]];
   sg.forEach(r=>{const b=document.createElement('button');b.className='chip';b.textContent=r;b.onclick=()=>{$('#pr').value=r;$('#pn').focus()};$('#rchips').appendChild(b)});
@@ -409,15 +410,15 @@ function main(){
     try{
       const r=await fetch(API+'/h/'+hh.hid,{headers:{'x-ek':hh.ek}});
       if(r.status===403||r.status===404){setSt('This sync is no longer valid. Stop syncing, then start again.');return}
-      if(!r.ok)throw 0;
+      if(!r.ok)throw new Error('the server answered '+r.status);
       const rd=(await r.json()).data||{},rm=rd.meta||{};
       A=mrg(A,rd.A||[]);T.p=mrg(T.p,rd.P||[]);T.c=mrg(T.c,rd.C||[]);INV=mrg(INV,rd.inv||[]);
       if((rm.u||0)>(+store.get(PK+'-metau')||0)&&rm.due){reload=rm.due!==store.get(PK+'-due');store.set(PK+'-due',rm.due);store.set(PK+'-src',rm.src||'');store.set(PK+'-metau',rm.u)}
       persist();
       const mine=snap(),theirs={meta:{due:rm.due||'',src:rm.src||'',u:rm.u||0},A:(rd.A||[]).slice().sort(byId),P:(rd.P||[]).slice().sort(byId),C:(rd.C||[]).slice().sort(byId),inv:(rd.inv||[]).slice().sort(byId)};
-      if(cj(mine)!==cj(theirs)){const w=await fetch(API+'/h/'+hh.hid,{method:'PUT',headers:{'x-ek':hh.ek,'content-type':'application/json'},body:JSON.stringify({data:mine})});if(!w.ok)throw 0}
+      if(cj(mine)!==cj(theirs)){const w=await fetch(API+'/h/'+hh.hid,{method:'PUT',headers:{'x-ek':hh.ek,'content-type':'application/json'},body:JSON.stringify({data:mine})});if(!w.ok)throw new Error('saving failed: '+w.status)}
       setSt('Synced just now');
-    }catch(e){setSt('Offline. It will sync when you’re back online.')}
+    }catch(e){console.error('Bloom sync',e);setSt('Couldn’t sync: '+(e&&e.message?e.message:String(e)))}
     finally{syncing=false}
     if(reload){due=parse(store.get(PK+'-due'));view=null;main();return}
     rT();rA();rI();
@@ -434,9 +435,9 @@ function main(){
   }
   async function startSync(){
     try{setSt('Starting…');if(!(+store.get(PK+'-metau')))store.set(PK+'-metau',Date.now());
-      const r=await fetch(API+'/h',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({data:snap()})});if(!r.ok)throw 0;
+      const r=await fetch(API+'/h',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({data:snap()})});if(!r.ok)throw new Error('the server answered '+r.status+' '+(await r.text()).slice(0,80));
       const j=await r.json();hh={hid:j.hid,ek:j.ek};store.set(PK+'-hh',JSON.stringify(hh));rS();setSt('Syncing is on. Tap “Copy pairing code” to connect your partner’s phone.')}
-    catch(e){setSt('Couldn’t reach the sync server. Check your connection and try again.')}
+    catch(e){console.error('Bloom sync',e);setSt('Couldn’t start syncing. Details: '+(e&&e.message?e.message:String(e))+' (talking to '+API+')')}
   }
   function shareCode(){const code='BLOOM1.'+hh.hid+'.'+hh.ek;if(navigator.share)navigator.share({text:code}).catch(()=>{});else{copyTxt(code);setSt('Pairing code copied.')}}
   async function stopSync(){
@@ -452,7 +453,7 @@ function main(){
   let edI=null;
   $('#ir').innerHTML=FR.map(r=>'<option>'+r+'</option>').join('');
   const shSum=i=>['baby development'].concat(i.sh&&i.sh.a?['appointments']:[],i.sh&&i.sh.t?['care team']:[],i.sh&&i.sh.c?['clinics']:[]).join(', ');
-  function rstI(){edI=null;$('#in').value='';setv($('#ir'),FR[0]);['ia','it','ic'].forEach(x=>$('#'+x).checked=false);$('#iadd').textContent='Create link';$('#s-i-t').textContent='Invite someone';closeSh('s-i')}
+  function rstI(){edI=null;$('#in').value='';setv($('#ir'),FR[0]);['ia','it','ic'].forEach(x=>$('#'+x).checked=false);$('#iadd').textContent='Create link';$('#s-i-t').textContent='Invite someone';$('#iform').style.display='';$('#ires').style.display='none';closeSh('s-i')}
   function rI(){
     const L=live(INV);
     $('#ilist').innerHTML=L.length?L.map(i=>`<div class="ai" tabindex="0" role="button" aria-expanded="false"><div class="av" style="background:${COL[(FR.indexOf(i.role)+1)%COL.length]}">${esc(ini(i.name))}</div><div class="ac"><b>${esc(i.name)}</b><span class="soft small">${esc(i.role)}</span><span class="soft small">Sees: ${shSum(i)}</span><div class="acts"><button class="ab2 cal" data-ic="${i.id}">${I.copy}Copy link</button>${navigator.share?`<button class="ab2" data-is="${i.id}">Share</button>`:''}<button class="ab2" data-ie="${i.id}">${I.edit}Edit</button><button class="ab2 del" data-ix="${i.id}" aria-label="Remove ${esc(i.name)}">${I.del}Remove</button></div></div><i class="chev">›</i></div>`).join(''):'<p class="soft small">No one invited yet.</p>';
@@ -462,8 +463,9 @@ function main(){
     $('#ilist').querySelectorAll('[data-ie]').forEach(b=>b.onclick=()=>{const i=g(b.dataset.ie);edI=i.id;$('#in').value=i.name;setv($('#ir'),i.role);$('#ia').checked=!!(i.sh&&i.sh.a);$('#it').checked=!!(i.sh&&i.sh.t);$('#ic').checked=!!(i.sh&&i.sh.c);$('#iadd').textContent='Save changes';$('#s-i-t').textContent='Edit invite';openSh('s-i')});
     $('#ilist').querySelectorAll('[data-ix]').forEach(b=>b.onclick=()=>{if(!confirm('Remove this person? Their link will stop working.'))return;const i=g(b.dataset.ix);i.del=true;i.tok='';i.u=Date.now();saveI();rI();sync()});
   }
+  function showLink(inv){const u=fam()+'#'+inv.tok;$('#irn').textContent=inv.name;$('#ilk').value=u;$('#iform').style.display='none';$('#ires').style.display='block';$('#s-i-t').textContent='Link ready';$('#icp').textContent='Copy link';$('#ish').style.display=navigator.share?'':'none';$('#icp').onclick=()=>{copyTxt(u);$('#icp').textContent='Copied'};$('#ish').onclick=()=>navigator.share({title:'Bloom',text:'Follow our baby’s journey:',url:u}).catch(()=>{});$('#idone').onclick=rstI;rI()}
   $('#iopen').onclick=()=>{rstI();openSh('s-i')};
-  $('#iadd').onclick=()=>{const n=$('#in').value.trim();if(!n){$('#in').focus();return}const sh={a:+$('#ia').checked,t:+$('#it').checked,c:+$('#ic').checked},o={name:n.slice(0,60),role:$('#ir').value,sh,u:Date.now()};if(edI)Object.assign(INV.find(x=>x.id===edI),o);else INV.push(Object.assign({id:Date.now(),tok:rndT()},o));saveI();rstI();rI()};
+  $('#iadd').onclick=()=>{const n=$('#in').value.trim();if(!n){$('#in').focus();return}const sh={a:+$('#ia').checked,t:+$('#it').checked,c:+$('#ic').checked},o={name:n.slice(0,60),role:$('#ir').value,sh,u:Date.now()};if(edI){Object.assign(INV.find(x=>x.id===edI),o);saveI();rstI();rI();return}const inv=Object.assign({id:Date.now(),tok:rndT()},o);INV.push(inv);saveI();clearTimeout(syncT);sync();showLink(inv)};
   rS();rI();sync();window.__bloomSync=sync;
   if(!window.__bloomVisL){window.__bloomVisL=1;document.addEventListener('visibilitychange',()=>{if(!document.hidden&&window.__bloomSync)window.__bloomSync()})}
 

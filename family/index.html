@@ -3,6 +3,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Bloom"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#F4EFFB"><link rel="apple-touch-icon" href="icon-180.png"><link rel="icon" href="icon-192.png">
 <title>Bloom</title>
+<meta name="referrer" content="no-referrer">
 <script src="../config.js"></script>
 <style>
 :root{--bg:#F4EFFB;--card:#FFFFFF;--ink:#3A2B4F;--soft:#7A6A91;--rose:#E5628A;--mint:#8FD3BC;--butter:#FFDB8E;--line:#E4DAF2;--glow:#FFE3EE;
@@ -140,6 +141,7 @@ input[type=tel]{display:block;width:100%;max-width:100%;min-width:0;min-height:5
 .ab2.del{color:#D6453D;background:rgba(214,69,61,.12);border-color:rgba(214,69,61,.38)}
 .nextb .ab2{margin-top:8px;background:transparent;color:inherit;border-color:currentColor}
 .ck{display:flex;align-items:center;gap:12px;min-height:46px;font-weight:700}.ck input{width:22px;height:22px;accent-color:var(--rose);flex:none}
+.nudge{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:14px 16px;margin-bottom:12px}.nudge b{display:block;font:800 17px ui-serif,Georgia,serif}.nudge span{display:block;color:var(--soft);font-size:14px;margin:4px 0 8px}
 footer{font-size:12px;color:var(--soft);text-align:center;margin-top:18px}
 main{padding-bottom:40px}.ai.fv{cursor:default}</style></head><body><main id="app"></main>
 <script>
@@ -210,6 +212,8 @@ const sv=p=>'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-w
 const COL=['#8FD3BC','#FFB8CB','#CDB8F0','#FFDB8E','#9CCBF2','#F6B38E'],ini=n=>n.replace(/^(dr\.?|mrs?\.?|ms\.?)\s+/i,'').split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0].toUpperCase()).join('')||'?';
 const mq=c=>encodeURIComponent(c.name+(c.addr?', '+c.addr:'')),maps=c=>'<a class="ab2 map" href="https://maps.apple.com/?q='+mq(c)+'" target="_blank" rel="noopener">'+PIN+'Apple Maps</a><a class="ab2 map" href="https://www.google.com/maps/search/?api=1&amp;query='+mq(c)+'" target="_blank" rel="noopener">'+PIN+'Google Maps</a>';
 let view=0,due=null,tok='',V=null;
+function installBanner(){const ios=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1),sa=navigator.standalone===true||(window.matchMedia&&matchMedia('(display-mode: standalone)').matches);
+  if(!ios||sa||store.get(FK+'-nobanner'))return '';return '<div class="nudge" id="inst"><b>Keep this on your Home Screen</b><span>Tap the Share button '+sv('<path d="M12 3v12M8 7l4-4 4 4"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/>').replace('<svg ','<svg style="width:18px;height:18px;vertical-align:-3px" ')+' at the bottom of Safari, then choose “Add to Home Screen.”</span><button class="ab2" id="instx">Got it</button></div>'}
 function msg(t,x){app.innerHTML='<div class="intro"><span class="fruit">🌸</span><h1>Bloom</h1><p class="soft" style="margin-top:8px">'+t+'</p></div>'+(x||'')}
 function extra(v){
   let h='';const cl=id=>(v.clinics||[]).find(x=>x.id===+id),pv=id=>(v.team||[]).find(x=>x.id===+id),dn=a=>Math.round((parse(a.d)-today())/DAY);
@@ -222,7 +226,8 @@ function render(v){
   V=v;due=parse(v.due);
   const left=Math.round((due-today())/DAY),g=Math.max(0,280-left),wk=Math.min(40,Math.floor(g/7)),dd=g%7,RF=v.role==='Grandparent'?RFG:RFF;
   if(!view)view=Math.max(2,wk);
-  app.innerHTML='<h1 class="gr">Hello, '+esc(v.name)+' 💛</h1>'+HERO+'<div class="card dev"><div class="bb" id="baby"></div><div><h2>What’s happening</h2><p id="dev"></p></div></div><div class="card mom"><div class="rw" style="border:0;margin:0;padding:0"><small>A quiet word for you</small><p class="refl" id="refl"></p></div></div>'+extra(v)+'<footer>Shared with you by the baby’s parents. Bloom is a family keepsake, not medical advice.</footer>';
+  app.innerHTML='<h1 class="gr">Hello, '+esc(v.name)+' 💛</h1>'+installBanner()+HERO+'<div class="card dev"><div class="bb" id="baby"></div><div><h2>What’s happening</h2><p id="dev"></p></div></div><div class="card mom"><div class="rw" style="border:0;margin:0;padding:0"><small>A quiet word for you</small><p class="refl" id="refl"></p></div></div>'+extra(v)+'<footer>Shared with you by the baby’s parents. Bloom is a family keepsake, not medical advice.</footer>';
+  if($('#instx'))$('#instx').onclick=()=>{store.set(FK+'-nobanner','1');$('#inst').remove()};
   const cw=Math.max(2,wk),sh=w=>{const x=new Date(due);x.setDate(x.getDate()-(280-7*w));return x},fd2=w=>sh(w).toLocaleDateString(undefined,{month:'short',day:'numeric'}),stg=$('#stage');
   MS.forEach(([w])=>{const d=document.createElement('i');d.dataset.w=w;d.style.left=((w-2)/38*100)+'%';$('#dots').appendChild(d)});
   const step=n=>{const v=Math.max(2,Math.min(40,view+n));if(v!==view){view=v;upd()}};
@@ -272,9 +277,12 @@ async function load(){
     if(!r.ok)throw 0;const v=await r.json();store.set(FK+'-cache',JSON.stringify(v));render(v)}
   catch(e){let c=null;try{c=JSON.parse(store.get(FK+'-cache')||'null')}catch(x){}if(c)render(c);else msg('We couldn’t load this right now. Check your connection and try again.')}
 }
-function ask(){msg('Paste the invite link you were sent to open the baby’s page.','<div class="card" style="margin-top:20px"><input type="text" id="pl" placeholder="Paste your invite link" autocapitalize="off" autocorrect="off"><div class="arow"><button class="btn" id="pgo">Open</button></div></div>');
-  $('#pgo').onclick=()=>{const t=$('#pl').value.trim().split('#').pop();if(t.length<16){$('#pl').focus();return}tok=t;store.set(FK+'-tok',t);load()}}
-const hsh=(location.hash||'').slice(1);if(hsh.length>=16){tok=hsh;store.set(FK+'-tok',hsh)}else tok=store.get(FK+'-tok')||'';
+const parseTok=t=>{t=String(t).trim();const m=t.match(/[?&]t=([\w-]+)/);return m?m[1]:t.split('#').pop()};
+function ask(){msg('Copy the invite link you were sent, then paste it here to open the baby’s page.','<div class="card" style="margin-top:20px"><input type="text" id="pl" placeholder="Paste your invite link" autocapitalize="off" autocorrect="off"><div class="arow"><button class="btn" id="pgo">Open</button></div><button class="btn alt" id="ppb" style="width:100%;margin-top:10px">Paste from clipboard</button></div>');
+  $('#ppb').onclick=()=>{if(navigator.clipboard&&navigator.clipboard.readText)navigator.clipboard.readText().then(t=>{$('#pl').value=t}).catch(()=>{$('#pl').focus()});else $('#pl').focus()};
+  $('#pgo').onclick=()=>{const t=parseTok($('#pl').value);if(t.length<16){$('#pl').focus();return}tok=t;store.set(FK+'-tok',t);try{history.replaceState(null,'',location.pathname+'?t='+t)}catch(e){}load()}}
+const qs=new URLSearchParams(location.search),hsh=(location.hash||'').slice(1),found=qs.get('t')||(hsh.length>=16?hsh:'');
+if(found.length>=16){tok=found;store.set(FK+'-tok',found);try{history.replaceState(null,'',location.pathname+'?t='+found)}catch(e){}}else tok=store.get(FK+'-tok')||'';
 if(!API)msg('This page isn’t connected yet. Please ask the baby’s parents.');else if(!tok)ask();else load();
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&tok&&API&&V)load()});
 </script></body></html>

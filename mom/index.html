@@ -139,6 +139,7 @@ input[type=tel]{display:block;width:100%;max-width:100%;min-width:0;min-height:5
 .ab2.del{color:#D6453D;background:rgba(214,69,61,.12);border-color:rgba(214,69,61,.38)}
 .nextb .ab2{margin-top:8px;background:transparent;color:inherit;border-color:currentColor}
 .ck{display:flex;align-items:center;gap:12px;min-height:46px;font-weight:700}.ck input{width:22px;height:22px;accent-color:var(--rose);flex:none}
+.nudge{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:14px 16px;margin-bottom:12px}.nudge b{display:block;font:800 17px ui-serif,Georgia,serif}.nudge span{display:block;color:var(--soft);font-size:14px;margin:4px 0 8px}
 footer{font-size:12px;color:var(--soft);text-align:center;margin-top:18px}
 </style></head><body><main id="app"></main>
 <script src="../config.js"></script>
@@ -252,7 +253,7 @@ function main(){
   <div class="mcap"><small id="mw"></small><b id="mt"></b><span id="md"></span><span class="mn" id="mn"></span></div>
   <div style="text-align:center"><button class="link" id="now">Back to this week</button></div>
 </section>
-<div id="next"></div>
+<div id="next"></div><div id="nudge"></div>
   
 <div class="card dev"><div class="bb" id="baby"></div><div><h2>What’s happening</h2><p id="dev"></p></div></div>
   <div class="card mom"><h2>For you, mama</h2><p id="mom"></p><div class="rw"><small>A quiet word</small><p class="refl" id="refl"></p></div></div>
@@ -262,12 +263,12 @@ function main(){
   <div class="sheet" id="s-a" role="dialog" aria-modal="true" aria-labelledby="s-a-t"><div class="sh-bg" data-close></div><div class="sh-box"><div class="sh-h"><h2 id="s-a-t">New appointment</h2><button class="link" data-close>Close</button></div><p class="soft small" style="margin-top:10px">Quick add</p><div class="chips" id="chips"></div><label class="fl" for="at">What</label><input type="text" id="at" placeholder="Appointment (e.g. OB checkup)"><label class="fl" for="ad">Date</label><input type="date" id="ad"><label class="fl" for="atm">Time (optional)</label><input type="time" id="atm"><label class="fl" for="ap">Provider (optional)</label><select id="ap"></select><label class="fl" for="ac">Clinic (optional)</label><select id="ac"></select><p class="hint2" id="ahint"></p><div class="arow"><button class="btn" id="aadd">Add appointment</button></div></div></div>
   </div><div class="pg" id="pg-m"><h1 class="gr">More</h1>
   <div class="card due"><div><b id="dueline"></b><span class="soft small" id="srcline"></span></div><button class="link" id="chg">Change</button></div>
+  <div class="ph"><h2 class="sec">Family</h2><button class="btn sm" id="iopen">+ Invite</button></div><p class="soft small" id="ihint" style="margin:-4px 0 10px"></p><div id="ilist"></div>
+  <div class="card" id="syncc" style="margin-top:14px"><h2>Sharing</h2><p class="soft small" id="syncst"></p><div class="acts" style="display:flex" id="syncb"></div></div>
   <div class="ph"><h2 class="sec">Care team</h2><button class="btn sm" id="popen">+ Add</button></div><div id="plist"></div>
   <div class="ph"><h2 class="sec">Clinics</h2><button class="btn sm" id="copen">+ Add</button></div><div id="clist"></div>
-  <div class="ph"><h2 class="sec">Family</h2><button class="btn sm" id="iopen">+ Invite</button></div><p class="soft small" id="ihint" style="margin:-4px 0 10px"></p><div id="ilist"></div>
-  <div class="card" id="syncc" style="margin-top:14px"><h2>Sync</h2><p class="soft small" id="syncst"></p><div class="acts" style="display:flex" id="syncb"></div></div>
   <div class="sheet" id="s-i" role="dialog" aria-modal="true" aria-labelledby="s-i-t"><div class="sh-bg" data-close></div><div class="sh-box"><div class="sh-h"><h2 id="s-i-t">Invite someone</h2><button class="link" data-close>Close</button></div><div id="iform"><label class="fl" for="in">Name</label><input type="text" id="in" placeholder="e.g. Grandma Sue"><label class="fl" for="ir">Who are they?</label><select id="ir"></select><p class="soft small" style="margin-top:14px"><b>Baby development is always shared.</b> Choose anything extra:</p><label class="ck"><input type="checkbox" id="ia">Upcoming appointments</label><label class="ck"><input type="checkbox" id="it">Care team (names and roles)</label><label class="ck"><input type="checkbox" id="ic">Clinics and addresses</label><p class="soft small">Phone numbers are never shared.</p><div class="arow"><button class="btn" id="iadd">Create link</button></div></div>
-  <div id="ires" style="display:none"><p style="margin-top:12px">Send this link to <b id="irn"></b>. Anyone who has it can see what you chose to share.</p><input type="text" id="ilk" readonly style="margin-top:10px"><div class="arow"><button class="btn" id="icp">Copy link</button><button class="btn alt" id="ish">Share</button></div><button class="link" id="idone" style="display:block;margin:10px auto 0">Done</button></div></div></div>
+  <div id="ires" style="display:none"><p style="margin-top:12px">Send this link to <b id="irn"></b>. Anyone who has it can see what you chose to share. When they open it on an iPhone, the page shows how to add it to their Home Screen.</p><input type="text" id="ilk" readonly style="margin-top:10px"><div class="arow"><button class="btn" id="icp">Copy link</button><button class="btn alt" id="ish">Share</button></div><button class="link" id="idone" style="display:block;margin:10px auto 0">Done</button></div></div></div>
   <div class="sheet" id="s-j" role="dialog" aria-modal="true" aria-labelledby="s-j-t"><div class="sh-bg" data-close></div><div class="sh-box"><div class="sh-h"><h2 id="s-j-t">Join with a code</h2><button class="link" data-close>Close</button></div><label class="fl" for="jc">Pairing code from your partner</label><input type="text" id="jc" placeholder="BLOOM1.…" autocapitalize="off" autocorrect="off"><p class="pv" id="jerr"></p><div class="arow"><button class="btn" id="jadd">Join</button></div></div></div>
   <div class="sheet" id="s-p" role="dialog" aria-modal="true" aria-labelledby="s-p-t"><div class="sh-bg" data-close></div><div class="sh-box"><div class="sh-h"><h2 id="s-p-t">New provider</h2><button class="link" data-close>Close</button></div><div class="chips" id="rchips"></div><label class="fl" for="pr">Role</label><select id="pr"></select><label class="fl" for="pn">Name</label><input type="text" id="pn" placeholder="e.g. Dr. Rivera"><label class="fl" for="pph">Phone (optional)</label><input type="tel" id="pph" placeholder="(555) 555-5555"><label class="fl" for="pc">Clinic (optional)</label><select id="pc"></select><div class="arow"><button class="btn" id="padd">Add provider</button></div></div></div>
   <div class="sheet" id="s-c" role="dialog" aria-modal="true" aria-labelledby="s-c-t"><div class="sh-bg" data-close></div><div class="sh-box"><div class="sh-h"><h2 id="s-c-t">New clinic</h2><button class="link" data-close>Close</button></div><label class="fl" for="cn">Clinic name</label><input type="text" id="cn" placeholder="e.g. Valley Women’s Health"><label class="fl" for="ca">Address</label><input type="text" id="ca" placeholder="Street, city, state"><div class="arow"><button class="btn" id="cadd">Add clinic</button></div></div></div>
@@ -409,7 +410,7 @@ function main(){
     if(!API||!hh||syncing)return;syncing=true;setSt('Syncing…');let reload=false;
     try{
       const r=await fetch(API+'/h/'+hh.hid,{headers:{'x-ek':hh.ek}});
-      if(r.status===403||r.status===404){setSt('This sync is no longer valid. Stop syncing, then start again.');return}
+      if(r.status===403||r.status===404){setSt('Sharing for this code has ended. Turn sharing off, then on again.');return}
       if(!r.ok)throw new Error('the server answered '+r.status);
       const rd=(await r.json()).data||{},rm=rd.meta||{};
       A=mrg(A,rd.A||[]);T.p=mrg(T.p,rd.P||[]);T.c=mrg(T.c,rd.C||[]);INV=mrg(INV,rd.inv||[]);
@@ -427,23 +428,22 @@ function main(){
   function rS(){
     const b=$('#syncb');b.innerHTML='';
     const mk=(t,cls,fn)=>{const x=document.createElement('button');x.className='ab2'+(cls?' '+cls:'');x.textContent=t;x.onclick=fn;b.appendChild(x)};
-    if(!API)setSt('Sync isn’t set up yet.');
-    else if(!hh){setSt('Not syncing yet. Start on one phone, then join from the other with a code.');mk('Start syncing','cal',startSync);mk('Join with a code','',()=>{$('#jc').value='';$('#jerr').textContent='';openSh('s-j')})}
-    else{if(!$('#syncst').textContent)setSt('Syncing is on.');mk('Copy pairing code','cal',shareCode);mk('Sync now','',sync);mk('Stop and delete synced data','del',stopSync)}
-    $('#ihint').textContent=hh?'Each person gets their own link and sees only what you choose.':'Turn on sync below to invite family.';
-    $('#iopen').disabled=!hh;
+    if(!API)setSt('Sharing isn’t set up yet.');
+    else if(!hh){setSt('Sharing is off. Turn it on to sync with your partner and invite family.');mk('Turn on sharing','cal',startSync);mk('I have a code','',()=>{$('#jc').value='';$('#jerr').textContent='';openSh('s-j')})}
+    else{if(!$('#syncst').textContent)setSt('Sharing is on.');mk('Send partner code','cal',shareCode);mk('Sync now','',sync);mk('Turn off and delete shared data','del',stopSync)}
+    $('#ihint').textContent=hh?'Each person gets their own link and sees only what you choose.':'Turn on sharing below to invite family.';
   }
   async function startSync(){
     try{setSt('Starting…');if(!(+store.get(PK+'-metau')))store.set(PK+'-metau',Date.now());
       const r=await fetch(API+'/h',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({data:snap()})});if(!r.ok)throw new Error('the server answered '+r.status+' '+(await r.text()).slice(0,80));
-      const j=await r.json();hh={hid:j.hid,ek:j.ek};store.set(PK+'-hh',JSON.stringify(hh));rS();setSt('Syncing is on. Tap “Copy pairing code” to connect your partner’s phone.')}
+      const j=await r.json();hh={hid:j.hid,ek:j.ek};store.set(PK+'-hh',JSON.stringify(hh));rS();setSt('Sharing is on. Tap “Send partner code” to connect your partner’s phone.')}
     catch(e){console.error('Bloom sync',e);setSt('Couldn’t start syncing. Details: '+(e&&e.message?e.message:String(e))+' (talking to '+API+')')}
   }
   function shareCode(){const code='BLOOM1.'+hh.hid+'.'+hh.ek;if(navigator.share)navigator.share({text:code}).catch(()=>{});else{copyTxt(code);setSt('Pairing code copied.')}}
   async function stopSync(){
-    if(!confirm('Stop syncing and delete the synced copy from the server? Your data stays on this phone, and family links stop working.'))return;
+    if(!confirm('Turn off sharing and delete the shared copy from the server? Your data stays on this phone, and family links stop working.'))return;
     try{await fetch(API+'/h/'+hh.hid,{method:'DELETE',headers:{'x-ek':hh.ek}})}catch(e){}
-    hh=null;INV=[];store.set(PK+'-hh','');store.set(PK+'-inv','[]');rS();rI();setSt('Sync is off.');
+    hh=null;INV=[];store.set(PK+'-hh','');store.set(PK+'-inv','[]');rS();rI();setSt('Sharing is off.');
   }
   $('#jadd').onclick=()=>{const m=$('#jc').value.trim().match(/^BLOOM1\.([\w-]+)\.([\w-]+)$/);if(!m){$('#jerr').textContent='That code doesn’t look right.';return}hh={hid:m[1],ek:m[2]};store.set(PK+'-hh',JSON.stringify(hh));store.set(PK+'-metau',0);closeSh('s-j');rS();sync()};
   const FR=['Grandparent','Aunt or uncle','Friend','Other family'],fam=()=>location.origin+location.pathname.replace(/\/(mom|dad)\/(index\.html)?$/,'/family/');
@@ -458,15 +458,17 @@ function main(){
     const L=live(INV);
     $('#ilist').innerHTML=L.length?L.map(i=>`<div class="ai" tabindex="0" role="button" aria-expanded="false"><div class="av" style="background:${COL[(FR.indexOf(i.role)+1)%COL.length]}">${esc(ini(i.name))}</div><div class="ac"><b>${esc(i.name)}</b><span class="soft small">${esc(i.role)}</span><span class="soft small">Sees: ${shSum(i)}</span><div class="acts"><button class="ab2 cal" data-ic="${i.id}">${I.copy}Copy link</button>${navigator.share?`<button class="ab2" data-is="${i.id}">Share</button>`:''}<button class="ab2" data-ie="${i.id}">${I.edit}Edit</button><button class="ab2 del" data-ix="${i.id}" aria-label="Remove ${esc(i.name)}">${I.del}Remove</button></div></div><i class="chev">›</i></div>`).join(''):'<p class="soft small">No one invited yet.</p>';
     const g=id=>INV.find(x=>x.id===+id);
-    $('#ilist').querySelectorAll('[data-ic]').forEach(b=>b.onclick=()=>{copyTxt(fam()+'#'+g(b.dataset.ic).tok);b.lastChild.textContent='Copied'});
-    $('#ilist').querySelectorAll('[data-is]').forEach(b=>b.onclick=()=>navigator.share({title:'Bloom',text:'Follow our baby’s journey:',url:fam()+'#'+g(b.dataset.is).tok}).catch(()=>{}));
+    $('#ilist').querySelectorAll('[data-ic]').forEach(b=>b.onclick=()=>{copyTxt(fam()+'?t='+g(b.dataset.ic).tok);b.lastChild.textContent='Copied'});
+    $('#ilist').querySelectorAll('[data-is]').forEach(b=>b.onclick=()=>navigator.share({title:'Bloom',text:'Follow our baby’s journey. When it opens, tap Share, then Add to Home Screen to keep it handy.',url:fam()+'?t='+g(b.dataset.is).tok}).catch(()=>{}));
     $('#ilist').querySelectorAll('[data-ie]').forEach(b=>b.onclick=()=>{const i=g(b.dataset.ie);edI=i.id;$('#in').value=i.name;setv($('#ir'),i.role);$('#ia').checked=!!(i.sh&&i.sh.a);$('#it').checked=!!(i.sh&&i.sh.t);$('#ic').checked=!!(i.sh&&i.sh.c);$('#iadd').textContent='Save changes';$('#s-i-t').textContent='Edit invite';openSh('s-i')});
     $('#ilist').querySelectorAll('[data-ix]').forEach(b=>b.onclick=()=>{if(!confirm('Remove this person? Their link will stop working.'))return;const i=g(b.dataset.ix);i.del=true;i.tok='';i.u=Date.now();saveI();rI();sync()});
+    rN();
   }
-  function showLink(inv){const u=fam()+'#'+inv.tok;$('#irn').textContent=inv.name;$('#ilk').value=u;$('#iform').style.display='none';$('#ires').style.display='block';$('#s-i-t').textContent='Link ready';$('#icp').textContent='Copy link';$('#ish').style.display=navigator.share?'':'none';$('#icp').onclick=()=>{copyTxt(u);$('#icp').textContent='Copied'};$('#ish').onclick=()=>navigator.share({title:'Bloom',text:'Follow our baby’s journey:',url:u}).catch(()=>{});$('#idone').onclick=rstI;rI()}
-  $('#iopen').onclick=()=>{rstI();openSh('s-i')};
+  function showLink(inv){const u=fam()+'?t='+inv.tok;$('#irn').textContent=inv.name;$('#ilk').value=u;$('#iform').style.display='none';$('#ires').style.display='block';$('#s-i-t').textContent='Link ready';$('#icp').textContent='Copy link';$('#ish').style.display=navigator.share?'':'none';$('#icp').onclick=()=>{copyTxt(u);$('#icp').textContent='Copied'};$('#ish').onclick=()=>navigator.share({title:'Bloom',text:'Follow our baby’s journey. When it opens, tap Share, then Add to Home Screen to keep it handy.',url:u}).catch(()=>{});$('#idone').onclick=rstI;rI()}
+  $('#iopen').onclick=()=>{if(!hh){setSt('Turn on sharing first, then you can invite family.');const c=$('#syncc');if(c&&c.scrollIntoView)c.scrollIntoView({behavior:'smooth',block:'center'});return}rstI();openSh('s-i')};
   $('#iadd').onclick=()=>{const n=$('#in').value.trim();if(!n){$('#in').focus();return}const sh={a:+$('#ia').checked,t:+$('#it').checked,c:+$('#ic').checked},o={name:n.slice(0,60),role:$('#ir').value,sh,u:Date.now()};if(edI){Object.assign(INV.find(x=>x.id===edI),o);saveI();rstI();rI();return}const inv=Object.assign({id:Date.now(),tok:rndT()},o);INV.push(inv);saveI();clearTimeout(syncT);sync();showLink(inv)};
-  rS();rI();sync();window.__bloomSync=sync;
+  function rN(){const e=$('#nudge');if(!e)return;if(!API||live(INV).length||store.get(PK+'-nudge')){e.innerHTML='';return}e.innerHTML='<div class="nudge"><b>Share the journey</b><span>Invite grandparents and friends to follow along. You choose what each person sees.</span><div class="acts" style="display:flex"><button class="ab2 cal" id="ngo">Set up sharing</button><button class="ab2" id="nno">Not now</button></div></div>';$('#ngo').onclick=()=>{go('m');const t=$('#syncc');if(t&&t.scrollIntoView)t.scrollIntoView({behavior:'smooth',block:'start'})};$('#nno').onclick=()=>{store.set(PK+'-nudge','1');rN()}}
+  rS();rI();rN();sync();window.__bloomSync=sync;
   if(!window.__bloomVisL){window.__bloomVisL=1;document.addEventListener('visibilitychange',()=>{if(!document.hidden&&window.__bloomSync)window.__bloomSync()})}
 
 
